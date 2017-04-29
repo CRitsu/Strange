@@ -1,5 +1,5 @@
 # JavaScript 相关说明
-对象：[strange.js](src/main/webapp/res/strange.js)
+对象：[strange.js](../src/main/webapp/res/strange.js)
 
 ### 通用部分
 定义了一个简易的Map工具，方法签名类似Java，拥有 get(key)，put(ket,value)，entrySet()，remove(key) 方法。
