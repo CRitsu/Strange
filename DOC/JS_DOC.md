@@ -5,7 +5,6 @@ SRC：strange.js
 定义了一个简易的Map工具，方法签名类似Java，拥有 get(key)，put(ket,value)，entrySet()，remove(key) 方法。
 
 ### 关于登陆
-<<<<<<< HEAD
 0. ready(fn)绑定
     遮罩层绑定关闭登录窗口控制器。
     登陆按钮绑定登录窗口显示控制器。
@@ -15,17 +14,6 @@ SRC：strange.js
 0. keydown(fn)绑定
     ESC（27）键按下事件触发时关闭遮罩层及登陆窗。
 0. resize(fn)绑定
-=======
-*. ready(fn)绑定
-    遮罩层绑定关闭登录窗口控制器。
-    登陆按钮绑定登录窗口显示控制器。
-    登录窗口登陆按钮绑定表单验证方法。
-    用户名及密码输入框绑定各自的验证方法。
-    绑定页面背景图片。
-*. keydown(fn)绑定
-    ESC（27）键按下事件触发时关闭遮罩层及登陆窗。
-*. resize(fn)绑定
->>>>>>> refs/remotes/CRS/master
     浏览器窗口分辨率变化事件触发时改变登陆窗口位置。
 0. 登陆用工具类
     关于登陆的JS统一在LogonUtil类中。
