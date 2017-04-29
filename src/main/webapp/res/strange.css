@@ -1,0 +1,245 @@
+@CHARSET "UTF-8";
+
+.min300 {
+  min-width: 300px;
+}
+
+.min600 {
+  min-width: 600px;
+}
+
+.min950 {
+  min-width: 950px;
+}
+
+.max970 {
+  max-width: 970px;
+}
+
+
+.height100p {
+  height: 100%;
+}
+.test-height {
+  min-height: 500px;
+}
+
+html {
+  background-color: #efefef;
+  min-width: 480px;
+}
+
+body {
+  background-color: rgba(0,0,0,0);
+}
+
+/* 一些常用的颜色定义 */
+.black {
+  background-color: black;
+}
+.blue {
+  background-color: #8cddff;
+}
+.white {
+  background-color: #fff;
+}
+
+/* 一些图片 */
+.img01 {
+  background-image: url("img/tree01.jpg");
+  background-repeat: no-repeat;
+  min-height: 100px;
+}
+.back-paper {
+  background-image: url("img/paper.png");
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+.back-wall {
+  background-image: url("img/wall.png");
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+
+header {
+  text-align: right;
+  padding-right: 30px;
+  height: 30px;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+/* 内容页面的属性 */ 
+.contents {
+  margin-top: 35px;
+}
+
+.widlimit {
+  max-width: 970px;
+}
+/* 重置导航默认颜色 */
+.navbar-default {
+  background-image: none;
+}
+
+.navbar {
+  min-height: 40px;
+}
+
+.shadow {
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
+  border-radius: 4px;
+}
+.shadow2 {
+  -webkit-box-shadow: inset 0 40px 0 rgba(255, 255, 255, 0.5), 0 1px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 50px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.row div {
+  padding: 15px;
+}
+
+@MEDIA (max-width: 480px) {
+  .hide-nav {
+    display: none !important;
+  }
+}
+
+
+section {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* 
+    登陆框的样式设定 
+    置顶，居中
+*/
+.login {
+  z-index: 1050;
+  position: fixed;
+  left: 150px;
+  top: 125px;
+  height: 250px;
+  width: 300px;
+}
+.login .login-box {
+  width: 265px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.login .white {
+  height: 100%;
+  width: 100%;
+}
+.mask {
+  background-color: rgba(0,0,0,0.75);
+  z-index: 1040;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.login .white{
+  padding: 15px;
+}
+.login .login-title {
+  height: 40px;
+  width: 100%;
+  font-size: 18px;
+  text-align: left;
+  line-height: 40px;
+  padding-left: 20px;
+}
+.white form {
+  margin-top: 15px;
+}
+.login .inp {
+  width: 80%;
+  text-align: center;
+}
+
+/*
+   嵌套在输入框中的图标
+*/
+.insideIcon {
+  width: 0px;
+  left: 10px;
+}
+.inputWithIcon {
+  padding-left: 25px;
+  width: 255px;
+  display: inline-block;
+}
+/*
+    行内块居左居右
+*/
+.inline-left {
+  display: inline-block;
+  float: left;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+.inline-right {
+  display: inline-block;
+  float: right;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+.login-button {
+  width: 265px;
+}
+.login a {
+  cursor: pointer;
+}
+
+/*
+    icon位置补正
+*/
+.set-icon {
+  top: 0px !important;
+  right: 15px;
+}
+
+#msg {
+  position: absolute;
+  margin: auto;
+  top: -20px;
+}
+
+/* 信息颜色 */
+.msg-font-white {
+  color: #fcf8e3;
+}
+.msg-bg-red {
+  background-color: #ee3b3b;
+}
+.msg-bg-green {
+  background-color: #5cb85c;
+}
+.msg-bg-blue {
+  background-color: #5bc0de;
+}
+.msg-bg-gray {
+  background-color: #9e9e9e;
+}
+
+
+/* 主体间距设定 */
+.holder div:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+/* 便签用hr */
+.holder hr{
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
