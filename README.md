@@ -27,5 +27,8 @@ HTML头部导入顺序
 <script type="text/javascript" src="res/strange.js"></script>
 ```
 
+### 说明传送门
+* [JS部分说明](DOC/JS_DOC.md)
+
 
 
