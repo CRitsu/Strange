@@ -559,50 +559,5 @@ var createCookie = function(){
 };
 
 
-/* --------------------以上实装方法，以下测试方法-----------------------------  */
-
-/* 输出一个1w以内的随机整数 */
-var random = function(){
-    document.write(Math.ceil(Math.random() * 10000));
-}
-/* 浏览器resize时改变box-left的高 *
-window.onresize = function() {
-    var hei = document.body.clientHeight;
-    $('#box-left').height = hei;
-}
-*/
-
-/* 测试 长度 */
-var testHeight = function() {
-    for (var i = 0; i < 50; i++)
-        document.write('<p>TEstTeStTesT</p>');
-}
 
 
-
-/* 随机句子测试方法*/
-
-var testSentence = function(times) {
-    var counts = Array();
-    var failed = 0;
-    for (var i = 0; i < sentence.length; i++)
-        counts[i] = 0;
-    for (var i = 0; i < times; i++) {
-        var index = parseInt(Math.random() * sentence.length);
-        var temp = sentence[index];
-        if (!temp) failed++;
-        else {
-            counts[index]++;
-        }
-    }
-    failed = (failed / times) * 100; 
-    document.write("失败的几率为"+failed+"%。<br>");
-    for (var i = 0; i < sentence.length; i++) {
-        document.write((counts[i]/times)*100+"%    "+sentence[i]+"<br>");
-    }
-    var a = 0;
-    for (var i = 0; i < counts.length; i++) {
-        a += counts[i]/times*100;
-    }
-    document.write(a);
-};
