@@ -186,6 +186,12 @@ var LogonUtil = function(){
     var ID_PASSWORD = "pw";
     // flag 服务端报错
     var FLAG_SERVER = "flag_server";
+    // bug-fix 重新显示登陆窗口时阻止显示上回错误信息 根据输入框状态显示错误
+    var INPUT_STATES = "inpuf_states";
+    // 测试用 确认flag正确性 
+    this.getFlag = function(){
+        return flag;
+    }
     
     
     /*
@@ -220,6 +226,8 @@ var LogonUtil = function(){
                     && $("#" + id + "-icon").removeClass(ERROR_ICON);
             $("#" + id + "-icon").attr("class").indexOf(SUCCESS_ICON)
                     && $("#" + id + "-icon").removeClass(SUCCESS_ICON);
+            // 清除所有OK和error状态之后，控制错误信息不显示（上回残留）
+            flag.put(INPUT_STATES,false);
             return;
         }
         // 正常情况下取得对应的图标然后替换
@@ -231,6 +239,8 @@ var LogonUtil = function(){
         $("#" + id + "-icon").attr("class").indexOf(removeIcon)
                 && $("#" + id + "-icon").removeClass(removeIcon);
         $("#" + id + "-icon").addClass(icon);
+        // OK或error存在，需要输出错误信息
+        flag.put(INPUT_STATES,true);
     }
     /*
      * 修改器调用方法
@@ -254,6 +264,12 @@ var LogonUtil = function(){
      * 错误信息内容更新器
      */
     this.setMsg = function(){
+        // 根据输入框的状态判断，无状态时清除错误信息，阻止显示
+        if (!flag.get(INPUT_STATES)){
+            flag.remove(PRIORITY_SERVER);
+            flag.remove(PRIORITY_USER);
+            flag.remove(PRIORITY_PASS);
+        }
         var temp;
         // 最优先判 服务端 
         temp = flag.get(PRIORITY_SERVER);
@@ -333,6 +349,7 @@ var LogonUtil = function(){
             }
         }
         // 初始化登陆窗口
+        flag.put(FLAG_SERVER,false);
         flag.put(ID_USERNAME,false);
         flag.put(ID_PASSWORD,false);
         this.setResult();
