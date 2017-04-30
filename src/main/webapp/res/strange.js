@@ -396,7 +396,7 @@ var LogonUtil = function(){
                 flag.put(FLAG_SERVER,true);
                 flag.put(PRIORITY_SERVER,SUCCESS_SERVER_SUCCESSED);
                 // 这里对登录成功后的跳转做设定，暂定，可能会采用异步局部刷新的方式
-                $("#f1").attr("action","");
+                $("#f1").attr("action","home.html");
             // 未通过验证
             } else {
                 // 去除输入框状态
