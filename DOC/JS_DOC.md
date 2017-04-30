@@ -2,37 +2,66 @@
 对象：[strange.js](../src/main/webapp/res/strange.js)
 
 ### 通用部分
-定义了一个简易的Map工具，方法签名类似Java，拥有 get(key)，put(ket,value)，entrySet()，remove(key) 方法。
+定义了一个简易的Map工具，方法签名类似Java，拥有 get(key)，put(key,value)，entrySet()，remove(key) 方法。
 
 ### 关于登陆
 0. ready(fn)绑定  
+
     遮罩层绑定关闭登录窗口控制器。  
     登陆按钮绑定登录窗口显示控制器。  
     登录窗口登陆按钮绑定表单验证方法。  
     用户名及密码输入框绑定各自的验证方法。  
     绑定页面背景图片。  
+    
 0. keydown(fn)绑定  
+
     ESC（27）键按下事件触发时关闭遮罩层及登陆窗。  
+    
 0. resize(fn)绑定  
+
     浏览器窗口分辨率变化事件触发时改变登陆窗口位置。  
+    
 0. 登陆用工具类  
+
     关于登陆的JS统一在LogonUtil类中。  
     类变量：  
-    * 短句定义
-    * flag集，MapUtil对象
-    * flag名定义
-    * 表单验证相关正则表达式定义
-    * 表单验证错误信息定义
-    * 表单验证状态定义
-    * Cookies操作用变量定义
+    * 短句定义  
+    * flag集，MapUtil对象  
+    * flag名定义  
+    * 表单验证相关正则表达式定义  
+    * 表单验证错误信息定义  
+    * 表单验证状态定义  
+    * Cookies操作用变量定义  
+    
 1. 登录窗口的显示控制  
-    showLogon()方法。  
-    显示登录窗口。  
+
+    登陆窗口。  
+    * showLogon()方法    
+    * 显示登录窗口    
+    * 取出cookies  
+    * （二回打开之后）  
+    * 抑制上回状态显示  
+    * 抑制上回错误信息显示   
+    
 2. 登录窗口短句更新器  
-    updateSentence()方法。  
+
+    窗口短句。  
+    * updateSentence()方法  
     登录窗口显示时，表单验证错误状态变为正确状态等时对登录窗口上方显示的信息进行随机更新。  
     
+3. 操作cookies
+
+    操作cookies，get和set。  
+    * getCookie(key)获取cookie  
+    * setCookie(key,value,expiredays)设定cookie  
     
+4. 表单验证
+
+    登陆界面输入框验证和反应。  
+    * checkUsername()用户名验证，标flag  
+    * checkPassword()密码验证，标flag  
+    * checkServer()本地验证通过，交服务器验证正确性，标flag  
+    * 判flag，改变输入框状态，提示错误
     
 更新中……  
 

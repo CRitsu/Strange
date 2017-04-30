@@ -130,17 +130,21 @@ var LogonUtil = function(){
     // 错误提示内容
     // 用户名错误内容
     var ERROR_USERNAME_BEGIN_WITH_LETTER = "用户名需以字母开头！";
-    var ERROR_USERNAME_LENGTH = "用户名长度在5位到25位之间！";
+    var ERROR_USERNAME_LENGTH = "用户名长度需要在5位到20位之间！";
     var ERROR_USERNAME_ILLEGAL = "用户名只能以字母、数字、下划线构成！";
-    var ERROR_USERNAME_UNAVAILABLE = "用户名被占用！";
     var ERROR_USERNAME_UNDEFINED = "用户名未输入！";
+    var ERROR_USERNAME_UNAVAILABLE = "用户名被占用！"; // 注册界面，服务器返回
     // 密码错误内容
-    var ERROR_PASSWORD_LENGTH = "密码长度在6位到18位之间！";
+    var ERROR_PASSWORD_LENGTH = "密码长度需要在6位到18位之间！";
     var ERROR_PASSWORD_ILLEGAL = "密码不可以包含空格！";
     var ERROR_PASSWORD_CONFIRM = "两次密码不一致！";
     var ERROR_PASSWORD_UNDEFINED = "密码未输入！";
-    // 文本颜色 红色
-    var COLOR_DANGER = "text-danger";
+    // 服务器返回
+    var ERROR_SERVER_FAILED = "用户名或密码不正确，请重试！";
+    var SUCCESS_SERVER_SUCCESSED = "登陆成功！";
+    // 文本颜色
+    var COLOR_ERROR = "text-danger";
+    var COLOR_SUCCESS = "text-success";
     
     // 表单验证，正则表达式定义
     // 检查用户名是否以字母开头
@@ -148,7 +152,7 @@ var LogonUtil = function(){
     // 检查用户名是否有特殊符号
     var userCheck2 = /^\w+$/;
     // 检查用户名长度（5-25）
-    var userCheck3 = /^\w{5,25}$/;
+    var userCheck3 = /^\w{5,20}$/;
     // 检查密码是否有空格
     var passCheck1 = /^[^\s]+$/;
     // 检查密码长度（6-18）
@@ -188,6 +192,9 @@ var LogonUtil = function(){
     var FLAG_SERVER = "flag_server";
     // bug-fix 重新显示登陆窗口时阻止显示上回错误信息 根据输入框状态显示错误
     var INPUT_STATES = "inpuf_states";
+    // onsubmit用flag
+    var SUBMIT = "submit";
+    
     // 测试用 确认flag正确性 
     this.getFlag = function(){
         return flag;
@@ -253,20 +260,23 @@ var LogonUtil = function(){
     
     // 着色方法
     var setColor = function(){
-        if (!flag.get(FLAG_COLOR)){
-            // 着色
-            $("#sentence").addClass(COLOR_DANGER);
-            // 标记flag
-            flag.put(FLAG_COLOR,true);
+        // 先去除一次着色
+        if (flag.get(FLAG_COLOR)){
+            $("#sentence").removeClass(COLOR_ERROR);
+            $("#sentence").removeClass(COLOR_SUCCESS);
         }
+        // 着色
+        if (!!flag.get(FLAG_SERVER)) $("#sentence").addClass(COLOR_SUCCESS);
+        else $("#sentence").addClass(COLOR_ERROR);
+        flag.put(FLAG_COLOR,true);
     }
     /*
      * 错误信息内容更新器
      */
     this.setMsg = function(){
-        // 根据输入框的状态判断，无状态时清除错误信息，阻止显示
+        // bug-fix 本地验证根据输入框状态判断，但是服务器信息优先不看输入框状态
+        // OLD:根据输入框的状态判断，无状态时清除错误信息，阻止显示
         if (!flag.get(INPUT_STATES)){
-            flag.remove(PRIORITY_SERVER);
             flag.remove(PRIORITY_USER);
             flag.remove(PRIORITY_PASS);
         }
@@ -288,8 +298,8 @@ var LogonUtil = function(){
             // 着色的场合
             if (flag.get(FLAG_COLOR)){
                 // 去除着色
-                $("#sentence").removeClass(COLOR_DANGER);
-                // 标记flag
+                $("#sentence").removeClass(COLOR_ERROR);
+                $("#sentence").removeClass(COLOR_SUCCESS);
                 flag.put(FLAG_COLOR,false);
                 // 更新句子
                 this.updateSentence();
@@ -319,6 +329,18 @@ var LogonUtil = function(){
         var c_end = cookies.indexOf(";",c_start);
         c_end = c_end != -1 ? c_end : cookies.length;
         return unescape(cookies.substring(c_start,c_end));
+    };
+    // 创建cookie
+    this.createCookie = function(){
+        if($("#hold").prop("checked")){
+            setCookie("username", $("#username1").val(), 30);
+            setCookie("password", $("#password1").val(), 30);
+            setCookie("checkbox", 1, 30);
+        } else {
+            setCookie("checkbox", 0, -1);
+            setCookie("username", 0, -1);
+            setCookie("password", 0, -1);
+        }
     };
     
     // 重置登陆窗口位置 
@@ -350,6 +372,8 @@ var LogonUtil = function(){
         }
         // 初始化登陆窗口
         flag.put(FLAG_SERVER,false);
+        // 去除服务器的反馈信息
+        flag.put(PRIORITY_SERVER,false);
         flag.put(ID_USERNAME,false);
         flag.put(ID_PASSWORD,false);
         this.setResult();
@@ -358,9 +382,36 @@ var LogonUtil = function(){
     
     // server验证
     this.checkServer = function(){
-        flag.put(FLAG_SERVER,FEEDBACK_SUCCESS);
-        return;
-        // TODO
+        
+        // 暂时直接放行，服务器备好之后开始验证
+        flag.put(FLAG_SERVER,true);
+        
+        // 设定 服务端获得结果，转换为JSON对象
+        var result = {"flag_server":true}; // 测试
+        // 因为服务器端来的错误信息需要覆盖本地验证错误信息，需要保证最后执行
+        if (!!result){
+            // 服务器使用flag_server标记结果状态
+            if (!!result[FLAG_SERVER]){
+                // 验证通过，登录成功
+                flag.put(FLAG_SERVER,true);
+                flag.put(PRIORITY_SERVER,SUCCESS_SERVER_SUCCESSED);
+                // 这里对登录成功后的跳转做设定，暂定，可能会采用异步局部刷新的方式
+                $("#f1").attr("action","");
+            // 未通过验证
+            } else {
+                // 去除输入框状态
+                flag.put(ID_USERNAME,false);
+                flag.put(ID_PASSWORD,false);
+                // 验证失败flag
+                flag.put(FLAG_SERVER,false);
+                // 储存错误信息
+                flag.put(PRIORITY_SERVER,ERROR_SERVER_FAILED);
+                // 清空密码
+                $("#password1").val("");
+            }
+        }
+        
+        // TODO 服务器部分写好之后补充
     }
     
     // username验证 
@@ -369,25 +420,21 @@ var LogonUtil = function(){
         var username = $("#username1").val();
         // 验证是否为空
         if(!username){
-            // 用户名未输入
             flag.put(ID_USERNAME,FEEDBACK_ERROR);
             flag.put(PRIORITY_USER,ERROR_USERNAME_UNDEFINED);
             return;
         // 首字母check
         } else if(!userCheck1.test(username)){
-            // 首字母error
             flag.put(ID_USERNAME,FEEDBACK_ERROR);
             flag.put(PRIORITY_USER,ERROR_USERNAME_BEGIN_WITH_LETTER);
             return;
         // 特殊字符check
         } else if (!userCheck2.test(username)) {
-            // 非法字符error
             flag.put(ID_USERNAME,FEEDBACK_ERROR);
             flag.put(PRIORITY_USER,ERROR_USERNAME_ILLEGAL);
             return;
         // 长度check
         } else if (!userCheck3.test(username)) {
-            // 长度error
             flag.put(ID_USERNAME,FEEDBACK_ERROR);
             flag.put(PRIORITY_USER,ERROR_USERNAME_LENGTH);
             return;
@@ -403,25 +450,21 @@ var LogonUtil = function(){
         var password = $("#password1").val();
         // 验证是否为空
         if(!password){
-            // 密码未输入
             flag.put(ID_PASSWORD,FEEDBACK_ERROR);
             flag.put(PRIORITY_PASS,ERROR_PASSWORD_UNDEFINED);
             return;
         // 密码空格check
         }else if(!passCheck1.test(password)){
-            // 密码有空格error
             flag.put(ID_PASSWORD,FEEDBACK_ERROR);
             flag.put(PRIORITY_PASS,ERROR_PASSWORD_ILLEGAL);
             return;
         // 密码长度check
         } else if(!passCheck2.test(password)){
-            // 密码长度error
             flag.put(ID_PASSWORD,FEEDBACK_ERROR);
             flag.put(PRIORITY_PASS,ERROR_PASSWORD_LENGTH);
             return;
         // 符合规则的密码
         } else {
-            // 合法
             flag.put(ID_PASSWORD,FEEDBACK_SUCCESS);
             flag.put(PRIORITY_PASS,false);
         }
@@ -440,54 +483,42 @@ var LogonUtil = function(){
             // 执行服务端check 
             this.checkServer();
             // 服务端通过时
-            if (flag.get(FLAG_SERVER))
-                return true;
-            // 未通过 刷新状态显示信息 
-            else {
-                this.setResult();
-                this.setMsg();
-                return false;
+            if (!!flag.get(FLAG_SERVER)){
+                flag.put(SUBMIT,true);
+                this.createCookie();
             }
+            // 未通过 
+            else flag.put(SUBMIT,false);
         }
-        // 未通过 刷新状态显示信息 
+        // 显示结果 
         this.setResult();
         this.setMsg();
-        return false;
+        return setTimeout(function(){
+            return flag.get(SUBMIT);
+        },1000);
+    }
+    /*
+     * 输入框绑定方法，绑定给失焦事件
+     */
+    this.onBlur = function(name){
+        // name 为空退出
+        if (!name) return;
+        // id = un 用户名输入框状态
+        if ("un" == name){
+            this.checkUsername();
+        // id = pw 密码输入框状态
+        } else if ("pw" == name){
+            this.checkPassword();
+        // 其他的场合 退出
+        } else return;
+        // 防止服务器信息显示，在onBlur方法应该阻止服务器信息
+        flag.put(PRIORITY_SERVER,false);
+        // 显示信息
+        this.setResultUtil(name);
+        this.setMsg();
+        
     }
 
-};
-
-
-
-
-/*
- * 关于cookie操作的方法
- */
-// 方便的“=”
-var equal = "=";
-// 方便的“;”
-var semicolon = ";";
-// 方便的过期时间key名
-var expiredays_equal = "expires="
-var date = new Date();
-// 计算过期时间
-var countExpiredays = function(days){
-    return days * 24 * 3600 * 1000;
-}
-// 设置cookie
-var setCookie = function(key,value,expiredays){
-    date.setTime(date.getTime() + countExpiredays(expiredays));
-    document.cookie = key + equal + escape(value) + semicolon + expiredays_equal 
-        + date.toGMTString();
-};
-// 从cookie中获取值
-var getCookie = function(key){
-    var cookies = document.cookie;
-    var c_start = cookies.indexOf(key) + key.length + 1;
-    if(!c_start) return "";
-    var c_end = cookies.indexOf(";",c_start);
-    c_end = c_end != -1 ? c_end : cookies.length;
-    return unescape(cookies.substring(c_start,c_end));
 };
 
 
@@ -495,7 +526,8 @@ var getCookie = function(key){
 /* --------------------以上定义方法，以下调用方法-----------------------------  */
 
 var logon = new LogonUtil();
-
+/* 设定背景图片 */
+var backName = "back-paper";
 /*
  * 登陆窗口设定
  * 
@@ -503,6 +535,7 @@ var logon = new LogonUtil();
 
 /* 绑定隐藏遮罩和登陆框的事件 */
 $(document).ready(function(){
+    $("html").addClass(backName);
     $("#close, #mask").on("click", function(){
         $("#login, #mask").removeClass("show");
         $("#login, #mask").addClass("hide");
@@ -513,15 +546,11 @@ $(document).ready(function(){
     $("#f1").on("submit", function(){
         return logon.execute();
     });
-    $("#username1").on("change", function(){
-        logon.checkUsername();
-        logon.setResultUtil("un");
-        logon.setMsg();
+    $("#username1").on("blur", function(){
+        logon.onBlur("un");
     });
-    $("#password1").on("change", function(){
-        logon.checkPassword();
-        logon.setResultUtil("pw");
-        logon.setMsg();
+    $("#password1").on("blur", function(){
+        logon.onBlur("pw");
     });
 })
 $(document).keydown(function(e) {
@@ -533,48 +562,4 @@ $(document).keydown(function(e) {
 $(window).resize(function(){
     logon.resizeLogin();
 })
-
-
-
-
-/* 设定背景图片 */
-var backName;
-$(document).ready(function(){
-    backName = "back-paper";
-    $("html").addClass(backName);
-})
-
-
-/*
- * 登陆表单验证
- */
-var loginCheck = function(){
-    // 接收check结果
-    var userFlag = checkUsername();
-    var passFlag = checkPassword();
-    // 保存cookie
-    userFlag && passFlag && createCookie();
-    return userFlag && passFlag;
-};
-
-
-
-/*
- * 关于cookie的操作
- */
-// 创建cookie
-var createCookie = function(){
-    if($("#hold").prop("checked")){
-        setCookie("username", $("#username1").val(), 30);
-        setCookie("password", $("#password1").val(), 30);
-        setCookie("checkbox", 1, 30);
-    } else {
-        setCookie("checkbox", 0, -1);
-        setCookie("username", 0, -1);
-        setCookie("password", 0, -1);
-    }
-};
-
-
-
 
