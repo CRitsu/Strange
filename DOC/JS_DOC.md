@@ -67,25 +67,25 @@
     
 5. 登陆用JS详细
 
-    1. 关于checkUsername()方法  
+    (0). 关于checkUsername()方法  
         * 非空  
         * 字母开头  
         * 位数5-20之间，/^\w{5,20}$/  
-    1. 关于checkPassword()方法
+    (1). 关于checkPassword()方法
         * 非空  
         * 位数6-18之间，/^\w{6,18}$/  
-    2. 关于checkServer()方法
+    (2). 关于checkServer()方法
         * 本地验证通过的前提下，交服务器认证
         * 接收结果并显示（正确：绿字跳转；错误：红字报错）
-    3. 以上验证都会对flag集进行操作，根据flag集做如下操作
+    (3). 以上验证都会对flag集进行操作，根据flag集做如下操作
         * flag.get(FLAG_SERVER) 首先判断服务器信息，服务器报信息时去掉输入框颜色
         * flag.get(ID_USERNAME) 其次判断用户名报错，在没提交服务器认证时用户名信息优先  
         * flag.get(ID_PASSWORD) 最后判断密码报错，本地验证用户名无报错时才报密码错  
         * （用户名和密码报错相应会更改输入框状态颜色，只有服务器认证通过才出绿字）  
-    4. onBlur()方法  
+    (4). onBlur()方法  
         * 用户名和密码输入框绑定onBlur()方法，失焦即刻验证表单  
         * 失焦timing使用登录按钮相同验证方法，分别绑定到用户名和密码框  
-    5. createCookie()方法
+    (5). createCookie()方法
         * 本地+服务器认证通过时
         * 保存密码checkbox选中时
         * 保存当前用户名密码和checkbox选中状态进入cookie
