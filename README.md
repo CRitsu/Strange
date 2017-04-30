@@ -1,8 +1,8 @@
 # Strange
-***
+
 ### 建站练习
 
-[DEMO展示](https://critsu.github.io/Strange/src/main/webapp/home.html)  
+> [DEMO展示](https://critsu.github.io/Strange/src/main/webapp/home.html)  
 完成度暂时只有首页框架及登录验证相关。
 
 * JAVA
