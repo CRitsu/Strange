@@ -333,13 +333,13 @@ var LogonUtil = function(){
     // 创建cookie
     this.createCookie = function(){
         if($("#hold").prop("checked")){
-            setCookie("username", $("#username1").val(), 30);
-            setCookie("password", $("#password1").val(), 30);
-            setCookie("checkbox", 1, 30);
+            this.setCookie("username", $("#username1").val(), 30);
+            this.setCookie("password", $("#password1").val(), 30);
+            this.setCookie("checkbox", 1, 30);
         } else {
-            setCookie("checkbox", 0, -1);
-            setCookie("username", 0, -1);
-            setCookie("password", 0, -1);
+            this.setCookie("checkbox", 0, -1);
+            this.setCookie("username", 0, -1);
+            this.setCookie("password", 0, -1);
         }
     };
     
@@ -357,7 +357,6 @@ var LogonUtil = function(){
     this.showLogon = function() {
         this.resizeLogin();
         $("#login, #mask").removeClass("hide");
-        $("#login, #mask").addClass("show");
         this.updateSentence();
         // 设置cookie
         if(!!document.cookie){
@@ -380,6 +379,13 @@ var LogonUtil = function(){
         this.setMsg();
     }
     
+    // 关闭登陆窗口和遮罩
+    this.closeLogon = function(){
+        $("#username1").val("");
+        $("#password1").val("");
+        $("#login, #mask").addClass("hide");
+    }
+    
     // server验证
     this.checkServer = function(){
         
@@ -396,7 +402,7 @@ var LogonUtil = function(){
                 flag.put(FLAG_SERVER,true);
                 flag.put(PRIORITY_SERVER,SUCCESS_SERVER_SUCCESSED);
                 // 这里对登录成功后的跳转做设定，暂定，可能会采用异步局部刷新的方式
-                $("#f1").attr("action","");
+                $("#f1").attr("action","test2.html");
             // 未通过验证
             } else {
                 // 去除输入框状态
@@ -516,7 +522,6 @@ var LogonUtil = function(){
         // 显示信息
         this.setResultUtil(name);
         this.setMsg();
-        
     }
 
 };
@@ -537,8 +542,7 @@ var backName = "back-paper";
 $(document).ready(function(){
     $("html").addClass(backName);
     $("#close, #mask").on("click", function(){
-        $("#login, #mask").removeClass("show");
-        $("#login, #mask").addClass("hide");
+        logon.closeLogon();
     })
     $("#logon_btn").on("click", function(){
         logon.showLogon();
