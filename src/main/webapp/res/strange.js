@@ -499,6 +499,11 @@ var LogonUtil = function(){
         // 显示结果 
         this.setResult();
         this.setMsg();
+        if (flag.get(SUBMIT)){
+            setTimeout(function(){
+                $("#f1").submit();
+            },1000);
+        }
         return setTimeout(function(){
             return flag.get(SUBMIT);
         },1000);
@@ -547,8 +552,8 @@ $(document).ready(function(){
     $("#logon_btn").on("click", function(){
         logon.showLogon();
     });
-    $("#f1").on("submit", function(){
-        return logon.execute();
+    $("#exec").on("click", function(){
+        logon.execute();
     });
     $("#username1").on("blur", function(){
         logon.onBlur("un");
