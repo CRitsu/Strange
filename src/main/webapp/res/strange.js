@@ -490,6 +490,7 @@ var LogonUtil = function(){
             this.checkServer();
             // 服务端通过时
             if (!!flag.get(FLAG_SERVER)){
+            	$("#exec").button('loading');
                 flag.put(SUBMIT,true);
                 this.createCookie();
             }
@@ -504,9 +505,6 @@ var LogonUtil = function(){
                 $("#f1").submit();
             },1000);
         }
-        return setTimeout(function(){
-            return flag.get(SUBMIT);
-        },1000);
     }
     /*
      * 输入框绑定方法，绑定给失焦事件
