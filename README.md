@@ -40,3 +40,8 @@ HTML头部导入顺序
 
 >   Github Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...
 
+### 资料和一些备忘
+* [pushState 和 ajax](dummy)  
+
+这里打算用pushState和ajax实现无刷单页网站。  
+（这里是个假连接，等有时间整理出来 TODO ）
