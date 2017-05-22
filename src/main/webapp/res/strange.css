@@ -86,7 +86,7 @@ header {
 }
 
 .navbar {
-  min-height: 40px;
+  height: 40px;
 }
 
 .shadow {
@@ -243,3 +243,18 @@ section {
   margin-bottom: 10px;
 }
 
+.float-right {
+  float: right;
+}
+
+.avatar {
+  height: 0px;
+  width: 0px;
+  box-shadow: 0px 0px 5px 0px;
+  cursor: pointer;
+}
+
+.under-navi {
+  top: 40px;
+  z-index: -1;
+}

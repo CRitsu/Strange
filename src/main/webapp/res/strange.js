@@ -974,7 +974,7 @@ var LogonUtil = function(){
                 flag.put(FLAG_SERVER,true);
                 flag.put(PRIORITY_SERVER,SUCCESS_SERVER_SUCCESSED);
                 // 这里对登录成功后的跳转做设定，暂定，可能会采用异步局部刷新的方式
-                $("#f1").attr("action","test2.html");
+//                $("#f1").attr("action","test2.html"); // 不使用
             // 未通过验证
             } else {
                 // 去除输入框状态
@@ -1072,11 +1072,7 @@ var LogonUtil = function(){
         // 显示结果 
         this.setResult();
         this.setMsg();
-        if (flag.get(SUBMIT)){
-            setTimeout(function(){
-                $("#f1").submit();
-            },1000);
-        }
+        return flag.get(SUBMIT);
     }
     /*
      * 输入框绑定方法，绑定给失焦事件
@@ -1101,11 +1097,102 @@ var LogonUtil = function(){
 
 };
 
-
+/*
+ * 有限状态机模式，控制头像和用户菜单
+ */
+var UserOperate = {
+    
+    currentState: "hide",
+    isOver: false,
+    isShow: false,
+    // 初始化
+    initialize: function(){
+        this.showAvatar();
+        $("#avatar,#dropdownMenu").mouseenter(function(){
+            this.isOver = true;
+            this.setCurrentState();
+            this.executeAction();
+        });
+        $("#avatar,#dropdownMenu").mouseleave(function(){
+            this.isOver = false;
+            this.setCurrentState();
+            this.executeAction();
+        });
+    },
+    // 显示头像
+    showAvatar: function(){
+      $("#logon_btn").addClass("hide");
+      $("#avatar").attr("src","res/img/avatar.jpg");
+      $("#avatar").animate({height:'60px',width:'60px'});
+      $("#avatar").animate({height:'38px',width:'38px'});
+    },
+    // 根据flag设定当前状态
+    setCurrentState: function(){
+       if(isOver && isShow){
+           this.currentState = "show";
+       } else if(isOver && !isShow) {
+           this.currentState = "showing";
+       } else if(!isOver && isShow) {
+           this.currentState = "hiding";
+       } else if(!isOver && !isShow){
+           this.currentState = "hide";
+       } else {
+           console.log("意料外状态：isOver（" + this.isOver + "） isShow（" + this.isShow + ")");
+       }
+    },
+    // 控制菜单显示
+    excuteAction: function(){
+        
+    }
+    
+    
+    
+    
+    // 信息应该从sever取
+//    // TODO
+//    // 先做个假的登陆成功的样子
+//    var isOver = true;
+//    var isEnter = false;
+//    var openSt = null;
+//    var hideSt = null;
+//    this.showAvatar = function(){
+//        // res/img/avatar.jpg
+//        $("#logon_btn").addClass("hide");
+//        $("#avatar").attr("src","res/img/avatar.jpg");
+//        $("#avatar").animate({height:'60px',width:'60px'});
+//        $("#avatar").animate({height:'38px',width:'38px'});
+//        $("#avatar,#dropdownMenu").mouseenter(function(){
+//            isEnter = true;
+//            if(openSt == null){
+//                openSt = setTimeout(() => {
+//                    if(!isOpen){
+//                        $("#avatar").animate({height:'50px',width:'50px'});
+//                        $("#dropdownMenu").stop().slideDown();
+//                        isOpen = true;
+//                    }
+//                    openSt = null;
+//                }, 200);
+//            }
+//        });
+//        $("#avatar,#dropdownMenu").mouseleave(function(){
+//            if(hideSt == null){
+//                hideSt = setTimeout(() => {
+//                    if(isOpen){
+//                        $("#avatar").animate({height:'38px',width:'38px'});
+//                        $("#dropdownMenu").stop().slideUp();
+//                        isOpen = false;
+//                    }
+//                    hideSt = null;
+//                }, 1000);
+//            }
+//        });
+//    }
+}
 
 /* --------------------以上定义方法，以下调用方法-----------------------------  */
 
 var logon = new LogonUtil();
+
 /* 设定背景图片 */
 var backName = "back-paper";
 /*
@@ -1123,7 +1210,13 @@ $(document).ready(function(){
         logon.showLogon();
     });
     $("#exec").on("click", function(){
-        logon.execute();
+        if (logon.execute()){
+            setTimeout(function(){
+                // 关闭登陆窗和遮罩
+                logon.closeLogon();
+                UserOperate.initialize();
+            },1000);
+        }
     });
     $("#username1").on("blur", function(){
         logon.onBlur("un");
