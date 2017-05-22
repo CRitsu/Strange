@@ -1102,21 +1102,25 @@ var LogonUtil = function(){
  */
 var UserOperate = {
     
+    // TODO 总之先做了一个假的登陆效果
+    // 预计用ajax实现后台交互异步刷新
     currentState: "hide",
     isOver: false,
     isShow: false,
+    timer: null,
+    enter: "mouseenter",
+    leave: "mouseleave",
     // 初始化
     initialize: function(){
         this.showAvatar();
-        $("#avatar,#dropdownMenu").mouseenter(function(){
-            this.isOver = true;
-            this.setCurrentState();
-            this.executeAction();
+        var ope = this;
+        $("#avatar,#dropdownMenu").mouseenter(function(e){
+            ope.setCurrentState(true);
+            ope.executeAction(e);
         });
-        $("#avatar,#dropdownMenu").mouseleave(function(){
-            this.isOver = false;
-            this.setCurrentState();
-            this.executeAction();
+        $("#avatar,#dropdownMenu").mouseleave(function(e){
+            ope.setCurrentState(false);
+            ope.executeAction(e);
         });
     },
     // 显示头像
@@ -1127,21 +1131,80 @@ var UserOperate = {
       $("#avatar").animate({height:'38px',width:'38px'});
     },
     // 根据flag设定当前状态
-    setCurrentState: function(){
-       if(isOver && isShow){
+    setCurrentState: function(flag){
+       this.isOver = flag;
+       if(this.isOver && this.isShow){
            this.currentState = "show";
-       } else if(isOver && !isShow) {
+       } else if(this.isOver && !this.isShow) {
            this.currentState = "showing";
-       } else if(!isOver && isShow) {
+       } else if(!this.isOver && this.isShow) {
            this.currentState = "hiding";
-       } else if(!isOver && !isShow){
+       } else if(!this.isOver && !this.isShow){
            this.currentState = "hide";
        } else {
            console.log("意料外状态：isOver（" + this.isOver + "） isShow（" + this.isShow + ")");
        }
     },
+    // 清除timer
+    clear: function(){
+        if (!!this.timer){
+            clearTimeout(this.timer);
+        }
+    },
+    clearAndShow: function(){
+        this.clear();
+        this.timer = setTimeout(() => {
+            this.isShow = true;
+            $("#avatar").animate({height:'50px',width:'50px'});
+            $("#dropdownMenu").slideDown(200);
+        }, 200);
+    },
+    clearAndHide: function(){
+        this.clear();
+        this.timer = setTimeout(() => {
+            this.isShow = false;
+            $("#avatar").animate({height:'38px',width:'38px'});
+            $("#dropdownMenu").slideUp(200);
+        }, 1000);
+    },
     // 控制菜单显示
-    excuteAction: function(){
+    executeAction: function(e){
+        console.log(e.type + " " + this.currentState);
+        switch (this.currentState){
+        case "hide":
+            if (e.type == this.enter){
+                this.clearAndShow();
+            } else if (e.type == this.leave){
+                this.clear();
+            }
+            break;
+        case "hiding":
+            if (e.type == this.enter){
+                this.clearAndShow();
+            } else if (e.type == this.leave){
+                this.clearAndHide();
+            }
+            break;
+        case "show":
+            if (e.type == this.enter){
+                this.clear();
+            } else if (e.type == this.leave){
+                this.clearAndHide();
+            }
+            break;
+        case "showing":
+            if (e.type == this.enter){
+                this.clearAndShow();
+            } else if (e.type == this.leave){
+                this.clearAndHide();
+            }
+            break;
+        default:
+            console.log("执行控制菜单显示时意料外状态：" + this.currentState);
+            console.log("isOver（" + this.isOver + "） isShow（" + this.isShow + ")");
+            break;
+        }
+        
         
     }
     
