@@ -956,6 +956,8 @@ var LogonUtil = function(){
         $("#username1").val("");
         $("#password1").val("");
         $("#login, #mask").addClass("hide");
+        // 恢复登陆按钮
+        $("#exec").button('reset');
     }
     
     // server验证
@@ -1107,25 +1109,58 @@ var UserOperate = {
     currentState: "hide",
     isOver: false,
     isShow: false,
+    isClose: false,
     timer: null,
     enter: "mouseenter",
     leave: "mouseleave",
+    // 又一个教训，初始化方法里的事件绑定只需要执行一次
+    isBound: false,
     // 初始化
     initialize: function(){
+        console.log("初始化调用 isClose:" + this.isClose);
         this.showAvatar();
         var ope = this;
-        $("#avatar,#dropdownMenu").mouseenter(function(e){
-            ope.setCurrentState(true);
-            ope.executeAction(e);
-        });
-        $("#avatar,#dropdownMenu").mouseleave(function(e){
-            ope.setCurrentState(false);
-            ope.executeAction(e);
+        if (!this.isBound){
+            this.bindMenuEvent();
+            this.isBound = true;
+            $("#avatar,#dropdownMenu").mouseenter(function(e){
+                ope.setCurrentState(true);
+                ope.executeAction(e);
+            });
+            $("#avatar,#dropdownMenu").mouseleave(function(e){
+                ope.setCurrentState(false);
+                ope.executeAction(e);
+            });
+        }
+    },
+    // 绑定菜单事件
+    bindMenuEvent: function(){
+        // JQuery 选择器内的this指的是被选中的node...
+        // 而指代本对象的this需要提前把this提取出来才能使用...
+        // 惨痛的教训...
+        var ope = this;
+        
+        // 退出登陆
+        $("#exit").on("click", function(){
+            ope.isClose = true;
+            $("#dropdownMenu").attr("style","display:none");
+            $("#avatar").animate({height:'60px',width:'60px'}, function(){
+                // 调试的结果，登陆按钮的显示放在这里更自然，几乎和下面的动画并行
+                $("#logon_btn").fadeIn(500);
+            });
+            $("#avatar").animate({height:'0',width:'0'}, function(){
+                $("#avatar").attr("src","");
+                // 防止造成混乱，整顿一下状态机的状态
+                ope.isShow = false;
+            });
+            console.log("关闭方法 isClose:" + this.isClose);
         });
     },
     // 显示头像
     showAvatar: function(){
-      $("#logon_btn").addClass("hide");
+      this.isClose = false;
+      // 登陆按钮隐藏更自然
+      $("#logon_btn").fadeOut();
       $("#avatar").attr("src","res/img/avatar.jpg");
       $("#avatar").animate({height:'60px',width:'60px'});
       $("#avatar").animate({height:'38px',width:'38px'});
@@ -1133,7 +1168,9 @@ var UserOperate = {
     // 根据flag设定当前状态
     setCurrentState: function(flag){
        this.isOver = flag;
-       if(this.isOver && this.isShow){
+       if(this.isClose){
+           this.currentState = "close";
+       } else if(this.isOver && this.isShow){
            this.currentState = "show";
        } else if(this.isOver && !this.isShow) {
            this.currentState = "showing";
@@ -1199,6 +1236,10 @@ var UserOperate = {
                 this.clearAndHide();
             }
             break;
+        case "close":
+            this.clear();
+            $("#dropdownMenu").attr("style","display:none");
+            break;
         default:
             console.log("执行控制菜单显示时意料外状态：" + this.currentState);
             console.log("isOver（" + this.isOver + "） isShow（" + this.isShow + ")");
@@ -1208,48 +1249,6 @@ var UserOperate = {
         
     }
     
-    
-    
-    
-    // 信息应该从sever取
-//    // TODO
-//    // 先做个假的登陆成功的样子
-//    var isOver = true;
-//    var isEnter = false;
-//    var openSt = null;
-//    var hideSt = null;
-//    this.showAvatar = function(){
-//        // res/img/avatar.jpg
-//        $("#logon_btn").addClass("hide");
-//        $("#avatar").attr("src","res/img/avatar.jpg");
-//        $("#avatar").animate({height:'60px',width:'60px'});
-//        $("#avatar").animate({height:'38px',width:'38px'});
-//        $("#avatar,#dropdownMenu").mouseenter(function(){
-//            isEnter = true;
-//            if(openSt == null){
-//                openSt = setTimeout(() => {
-//                    if(!isOpen){
-//                        $("#avatar").animate({height:'50px',width:'50px'});
-//                        $("#dropdownMenu").stop().slideDown();
-//                        isOpen = true;
-//                    }
-//                    openSt = null;
-//                }, 200);
-//            }
-//        });
-//        $("#avatar,#dropdownMenu").mouseleave(function(){
-//            if(hideSt == null){
-//                hideSt = setTimeout(() => {
-//                    if(isOpen){
-//                        $("#avatar").animate({height:'38px',width:'38px'});
-//                        $("#dropdownMenu").stop().slideUp();
-//                        isOpen = false;
-//                    }
-//                    hideSt = null;
-//                }, 1000);
-//            }
-//        });
-//    }
 }
 
 /* --------------------以上定义方法，以下调用方法-----------------------------  */
