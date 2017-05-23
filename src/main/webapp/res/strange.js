@@ -1153,7 +1153,7 @@ var UserOperate = {
                 // 防止造成混乱，整顿一下状态机的状态
                 ope.isShow = false;
             });
-            console.log("关闭方法 isClose:" + this.isClose);
+            console.log("关闭方法 isClose:" + ope.isClose);
         });
     },
     // 显示头像
