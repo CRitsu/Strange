@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="Shift-JIS">
+<meta charset="SHIFT_JIS">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
@@ -46,42 +46,151 @@ span {
 .input-group {
     margin-right: 5px;
 }
+.red {
+    color: red;
+}
 </style>
 <script type="text/javascript">
 class InitUtil {
     constructor()
     {
-        this.count = 1;
+        var self = this;
+        self.count = 1;
+        self.result = $("#result"); // å‡ºåŠ›çµæœ
+        self.yosou = $("#yosouSize"); // äºˆæƒ³ã‚µã‚¤ã‚º
+        self.jissai = $("#jissaiSize"); // å®Ÿéš›ã‚µã‚¤ã‚º
+        self.sabun = $("#sabunSize"); // å·®åˆ†ã‚µã‚¤ã‚º
+        self.msg = $("#msg");
+        self.wantedSize = $("#wantedSize");
+        self.result.on("change", function(){
+            self.textareaCount();
+        });
+        
+        self.wantedSize.on("change",function(){
+            self.setWantedSize();
+        });
+        
+        $("#clear").on("click",function(){
+            self.wantedSize.val("");
+            self.setWantedSize();
+        });
+    }
+    
+    countResult(){
+        var self = this;
+        self.result.val("");
+        for (var i = 1; i <= self.count; i++){
+            var temp = "#value" + String(i);
+            var target = $(temp);
+            console.log(temp + target)
+            if (target.length > 0) {
+            console.log("flag in")
+                temp = self.countByte( target.val());
+                temp = !!temp || 0;
+                var size = parseInt(target.attr("maxlength"));
+                var diff = parseInt(size - temp);
+                if (diff < 0) {
+                    self.msg.html("å…¥åŠ›å€¤ã®ãƒã‚¤ãƒˆæ•°ã¯è¦å®šãƒã‚¤ãƒˆæ•°ã‚ˆã‚Šå¤§ãã„ã§ã™ã€‚");
+                } else {
+                    var resultStr = target.val();
+                    for (var j = 0; j < diff; j++){
+                        resultStr += " ";
+                    }
+                    self.result.val(self.result.val() +resultStr);
+                    self.textareaCount();
+                }
+            }
+        }
+    }
+    
+    setWantedSize(){
+            this.yosou.html(parseInt(this.wantedSize.val()) || 0);
+            this.textareaCount();
+    }
+    
+    textareaCount(){
+        var temp = this.countByte(this.result.val());
+        console.log(temp);
+        this.jissai.html(temp || 0);
+        var sa = parseInt(this.yosou.html()) - parseInt(this.jissai.html());
+        sa = sa || 0;
+        this.sabun.html(sa );
+    }
+    
+    countByte(str){
+        if (!str) return;
+        var r = 0; 
+        for (var i = 0; i < str.length; i++) { 
+        var c = str.charCodeAt(i); 
+        // Shift_JIS: 0x0 ~ 0x80, 0xa0 , 0xa1 ~ 0xdf , 0xfd ~ 0xff 
+        // Unicode : 0x0 ~ 0x80, 0xf8f0, 0xff61 ~ 0xff9f, 0xf8f1 ~ 0xf8f3 
+            if ( (c >= 0x0 && c < 0x81) || (c == 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) { 
+                r += 1; 
+            } else { 
+                r += 2; 
+            } 
+        } 
+        return r; 
+    }
+    createInput(){
+        var parent = $("#inputBox");
+        this.count++;
+        var child = '<div class="form-group"  id="group'+ this.count +'">' +
+            ' <div class="input-group">'+
+            '  <span class="input-group-addon" data-toggle="tooltip" data-placement="left" '+
+            '    title="6æ–‡å­—ä»¥å†…ã®é …ç›®åç§°">é …ç›®å</span> '+
+            '  <input type="text" class="form-control" id="itemName'+ this.count +'" size="8"> '+
+            '  <span class="input-group-addon" data-toggle="tooltip" data-placement="top" '+
+            '    title="3æ¡ä»¥å†…">ã‚µã‚¤ã‚º</span>'+
+            '  <input type="text" class="form-control" id="itemSize'+ this.count +'" size="1" maxlength="3"> '+
+           ' </div>'+
+           ' <div class="btn-group" data-toggle="buttons">'+
+           '   <label class="btn btn-info active">'+
+           '     <input type="radio" name="space'+ this.count +'" id="option1'+ this.count +'" autocomplete="off" value="0" checked> åŠè§’'+
+           '   </label>'+
+           '   <label class="btn btn-info">'+
+           '     <input type="radio" name="space'+ this.count +'" id="option2'+ this.count +'" autocomplete="off" value="1"> å…¨è§’'+
+           '   </label>'+
+           ' </div>'+
+           '   <span class="glyphicon glyphicon-exclamation-sign"'+
+           '     data-toggle="tooltip" data-placement="top" '+
+           '     title="åŠè§’ã‚¹ãƒšãƒ¼ã‚¹ãƒ»å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹ã§ã‚µã‚¤ã‚ºã‚’è£œè¶³ã—ã¾ã™"></span>'+
+           '  <button class="btn glyphicon glyphicon-plus circle" type="button" onclick="init.addAction('+ this.count +');"></button>'+
+           '  </div>';
+           parent.append(child);
+           $('[data-toggle="tooltip"]').tooltip();
+        
+    }
+    
+    removeAction(flag){
+        var temp = "#group"+ String(flag);
+        $(temp).remove();
     }
     
     addAction(flag){
         var itemName = "#itemName" + String(flag);
         itemName = $(itemName).val();
-        itemName = itemName || "€–Ú" + String(flag);
+        itemName = itemName || "é …ç›®" + String(flag);
         var itemSize = "#itemSize" + String(flag);
         itemSize = $(itemSize).val();
         if(!parseInt(itemSize)){
-            $("#msg").html("ƒTƒCƒY‚Ì“ü—Í‚ÉŒë‚è‚ª‚ ‚è‚Ü‚·B");
+            $("#msg").html("ã‚µã‚¤ã‚ºã®å…¥åŠ›ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™ã€‚");
             return;
         }
         var html = '<div class="input-group">' +
         ' <span class="input-group-addon item-name" data-toggle="tooltip" data-placement="left"'+ 
-        ' title="'+ itemSize +'ƒoƒCƒg">' + itemName +'</span><input type="text" class="form-control ipt"'+
-        ' maxlength="'+ itemSize +'" id="value'+ String(flag) +'"> '+
+        ' title="'+ itemSize +'ãƒã‚¤ãƒˆ">' + itemName +'</span><input type="text" class="form-control ipt"'+
+        ' maxlength="'+ itemSize +'" id="value'+ String(flag) +'" onchange="init.countResult();"> '+
         ' </div><span class="glyphicon glyphicon-exclamation-sign" data-toggle="tooltip" data-placement="top"' +
-        ' title="–¢–•”•ª‚Í©“®“I‚ÉƒXƒy[ƒX‚Å•â‘«‚µ‚Ü‚·‚Ì‚ÅA“à—e‚¾‚¯“ü—Í‚·‚ê‚Î‚æ‚¢‚Å‚·"></span>' +
+        ' title="æœªæº€éƒ¨åˆ†ã¯è‡ªå‹•çš„ã«ã‚¹ãƒšãƒ¼ã‚¹ã§è£œè¶³ã—ã¾ã™ã®ã§ã€å†…å®¹ã ã‘å…¥åŠ›ã™ã‚Œã°ã‚ˆã„ã§ã™"></span>' +
         ' <button class="btn glyphicon glyphicon-minus circle" type="button"'+
         ' onclick="init.removeAction('+ String(flag) +');"></button>';
         
         $("#group"+ String(flag)).html(html);
-        
+        $('[data-toggle="tooltip"]').tooltip();
         console.log(itemName + itemSize);
     }
-    removeAction(flag){
-        console.log("removeAction was called");
-    }
 }
-var init = new InitUtil();
 $('body').ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 });
@@ -91,10 +200,11 @@ $('body').ready(function() {
   <div class="container">
     <div class="row">
       <div class="col-md-12 title">
+      <h1>åºŸå¼ƒï¼Œä¸ç”¨</h1>
         <h3><small class="glyphicon glyphicon-exclamation-sign"
          data-toggle="tooltip" data-placement="left" 
-         title="‚±‚±‚Å‚ÍÀsó‹µ‚É‚Â‚¢‚Ä‚Ìà–¾“I‚ÈƒƒbƒZ[ƒW‚ª•\¦‚³‚ê‚Ü‚·"></small>
-         <span id="msg">ƒƒbƒZ[ƒW‚Í‚±‚±‚Å•\¦‚µ‚Ü‚·B</span></h3>
+         title="ã“ã“ã§ã¯å®Ÿè¡ŒçŠ¶æ³ã«ã¤ã„ã¦ã®èª¬æ˜çš„ãªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒè¡¨ç¤ºã•ã‚Œã¾ã™"></small>
+         <span id="msg">ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯ã“ã“ã§è¡¨ç¤ºã—ã¾ã™ã€‚</span></h3>
         <hr>
       </div>
       <div class="col-md-6">
@@ -102,33 +212,33 @@ $('body').ready(function() {
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon" data-toggle="tooltip" data-placement="left" 
-              title="—\‘zƒTƒCƒY‚ğ“ü—Í‚·‚é‚Æ“®“I‚ÉŒŸØ‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·">—\‘zƒTƒCƒY</span> 
+              title="äºˆæƒ³ã‚µã‚¤ã‚ºã‚’å…¥åŠ›ã™ã‚‹ã¨å‹•çš„ã«æ¤œè¨¼ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™">äºˆæƒ³ã‚µã‚¤ã‚º</span> 
               <input type="text" class="form-control" maxlength="6" id="wantedSize"> 
-              <span class="input-group-addon">ƒoƒCƒg</span>
+              <span class="input-group-addon">ãƒã‚¤ãƒˆ</span>
             </div>
-              <button class="btn">ƒNƒŠƒA</button>
+              <button class="btn" id="clear">ã‚¯ãƒªã‚¢</button>
          </div>
         
           <div class="form-group"  id="group1">
             <div class="input-group">
               <span class="input-group-addon" data-toggle="tooltip" data-placement="left" 
-                title="6šˆÈ“à‚Ì€–Ú–¼Ì">€–Ú–¼</span> 
+                title="6æ–‡å­—ä»¥å†…ã®é …ç›®åç§°">é …ç›®å</span> 
               <input type="text" class="form-control" id="itemName1" size="8"> 
               <span class="input-group-addon" data-toggle="tooltip" data-placement="top" 
-                title="3Œ…ˆÈ“à">ƒTƒCƒY</span>
+                title="3æ¡ä»¥å†…">ã‚µã‚¤ã‚º</span>
               <input type="text" class="form-control" id="itemSize1" size="1" maxlength="3"> 
             </div>
             <div class="btn-group" data-toggle="buttons">
               <label class="btn btn-info active">
-                <input type="radio" name="space" id="option2" autocomplete="off" value="0" checked> ”¼Šp
+                <input type="radio" name="space1" id="option11" autocomplete="off" value="0" checked> åŠè§’
               </label>
               <label class="btn btn-info">
-                <input type="radio" name="space" id="option3" autocomplete="off" value="1"> ‘SŠp
+                <input type="radio" name="space1" id="option21" autocomplete="off" value="1"> å…¨è§’
               </label>
             </div>
               <span class="glyphicon glyphicon-exclamation-sign"
                 data-toggle="tooltip" data-placement="top" 
-                title="”¼ŠpƒXƒy[ƒXE‘SŠpƒXƒy[ƒX‚ÅƒTƒCƒY‚ğ•â‘«‚µ‚Ü‚·"></span>
+                title="åŠè§’ã‚¹ãƒšãƒ¼ã‚¹ãƒ»å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹ã§ã‚µã‚¤ã‚ºã‚’è£œè¶³ã—ã¾ã™"></span>
              <button class="btn glyphicon glyphicon-plus circle" type="button" onclick="init.addAction(1);"></button>
           </div>
           
@@ -137,22 +247,29 @@ $('body').ready(function() {
           
         </div>
         <hr>
-        <button class="btn btn-link">‚±‚±‚ğƒNƒŠƒbƒN‚µ‚ÄV‚µ‚¢€–Ú‚ğ’Ç‰Á‚Å‚«‚Ü‚·B</button>
+        <button class="btn btn-link" onclick="init.createInput()">ã“ã“ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ã¦æ–°ã—ã„é …ç›®ã‚’è¿½åŠ ã§ãã¾ã™ã€‚</button>
       </div>
          
          
       <div class="col-md-6">
         <div class="panel panel-primary">
-            <div class="panel-heading">ì¬Œ‹‰Ê‚Í‰º‹L‚ÌƒeƒLƒXƒgƒGƒŠƒA‚É‘‚«‚İ‚Ü‚·B</div>
-            <textarea class="form-control" rows="10" cols=""></textarea>
+            <div class="panel-heading">ä½œæˆçµæœã¯ä¸‹è¨˜ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚</div>
+            <textarea class="form-control" rows="10" cols="" id="result"></textarea>
         </div>
         <p>
-            —\‘zƒTƒCƒYF<span class="text-primary" id="showSize">1</span>ƒoƒCƒgA
-            ÀÛƒTƒCƒYF<span class="text-primary" id="showSize">1</span>ƒoƒCƒgA
-            ·•ªƒTƒCƒYF<span class="text-primary" id="showSize">1</span>ƒoƒCƒgB
+            äºˆæƒ³ã‚µã‚¤ã‚ºï¼š<span class="text-primary" id="yosouSize">0</span>ãƒã‚¤ãƒˆã€
+            å®Ÿéš›ã‚µã‚¤ã‚ºï¼š<span class="text-primary" id="jissaiSize">0</span>ãƒã‚¤ãƒˆã€
+            å·®åˆ†ã‚µã‚¤ã‚ºï¼š<span class="red" id="sabunSize">0</span>ãƒã‚¤ãƒˆã€‚
         </p>
       </div>
     </div>
   </div>
+  
+  
+  
+  
+  <script type="text/javascript">
+  var init = new InitUtil();
+  </script>
 </body>
 </html>
