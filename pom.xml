@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <spring.ver>4.3.9.RELEASE</spring.ver>
+    <spring.ver>4.0.0.RELEASE</spring.ver>
   </properties>
 
   <dependencies>
@@ -70,6 +70,26 @@
         <scope>test</scope>
     </dependency>
     
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjrt</artifactId>
+        <version>1.8.10</version>
+    </dependency>
+    
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>1.8.10</version>
+    </dependency>
+    
+        <!-- https://mvnrepository.com/artifact/cglib/cglib -->
+    <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>3.2.5</version>
+    </dependency>
       
     <dependency>
       <groupId>junit</groupId>

@@ -6,6 +6,10 @@
 完成度暂时只有首页框架及登录验证相关。
 
 * JAVA
+    * Spring
+    * Spring MVC
+    * iBats
+
 * HTML
     * JS（JQ）
     * CSS
@@ -17,7 +21,7 @@
 
 阶段
 * HTML DEMO制作
-
+* 研究Spring框架ing
 
 HTML头部导入顺序
 ```html
@@ -45,3 +49,7 @@ HTML头部导入顺序
 
 这里打算用pushState和ajax实现无刷单页网站。  
 （这里是个假连接，等有时间整理出来 TODO ）
+
+* [Spring学习的一些笔记](DOC/Spring_notes.md)
+
+记录一些使用Spring时遇到的问题和解决方法。
