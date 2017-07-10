@@ -70,6 +70,13 @@
         <scope>test</scope>
     </dependency>
     
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.ver}</version>
+    </dependency>
+        
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
     <dependency>
         <groupId>org.aspectj</groupId>
@@ -122,4 +129,15 @@
       </properties>
     </profile>
   </profiles>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
