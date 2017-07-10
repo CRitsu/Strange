@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="SHIFT_JIS">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+<title>CreateData</title>
+<style type="text/css">
+h3 {
+    line-height: 100px;
+}
+.tips {
+    display: inline-block;
+    background-color: #000;
+}
+textarea {
+    resize: vertical;
+    outline: none;
+    border-radius: 0px !important;
+}
+span {
+    display: inline-block;
+}
+.form-inline .form-group {
+    margin-bottom: 15px;
+}
+.circle {
+    margin-left: 20px;
+    outline: none !important;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+}
+.item-name {
+    max-width: 100px;
+    width: 100px !important;
+}
+.ipt {
+    width: 321px !important;
+}
+.input-group {
+    margin-right: 5px;
+}
+.red {
+    color: red;
+}
+</style>
+<script type="text/javascript">
+class InitUtil {
+    constructor()
+    {
+        var self = this;
+        self.count = 1;
+        self.result = $("#result"); // 出力結果
+        self.yosou = $("#yosouSize"); // 予想サイズ
+        self.jissai = $("#jissaiSize"); // 実際サイズ
+        self.sabun = $("#sabunSize"); // 差分サイズ
+        self.msg = $("#msg");
+        self.wantedSize = $("#wantedSize");
+        self.result.on("change", function(){
+            self.textareaCount();
+        });
+        
+        self.wantedSize.on("change",function(){
+            self.setWantedSize();
+        });
+        
+        $("#clear").on("click",function(){
+            self.wantedSize.val("");
+            self.setWantedSize();
+        });
+    }
+    
+    countResult(){
+        var self = this;
+        self.result.val("");
+        for (var i = 1; i <= self.count; i++){
+            var temp = "#value" + String(i);
+            var target = $(temp);
+            console.log(temp + target)
+            if (target.length > 0) {
+            console.log("flag in")
+                temp = self.countByte( target.val());
+                temp = !!temp || 0;
+                var size = parseInt(target.attr("maxlength"));
+                var diff = parseInt(size - temp);
+                if (diff < 0) {
+                    self.msg.html("入力値のバイト数は規定バイト数より大きいです。");
+                } else {
+                    var resultStr = target.val();
+                    for (var j = 0; j < diff; j++){
+                        resultStr += " ";
+                    }
+                    self.result.val(self.result.val() +resultStr);
+                    self.textareaCount();
+                }
+            }
+        }
+    }
+    
+    setWantedSize(){
+            this.yosou.html(parseInt(this.wantedSize.val()) || 0);
+            this.textareaCount();
+    }
+    
+    textareaCount(){
+        var temp = this.countByte(this.result.val());
+        console.log(temp);
+        this.jissai.html(temp || 0);
+        var sa = parseInt(this.yosou.html()) - parseInt(this.jissai.html());
+        sa = sa || 0;
+        this.sabun.html(sa );
+    }
+    
+    countByte(str){
+        if (!str) return;
+        var r = 0; 
+        for (var i = 0; i < str.length; i++) { 
+        var c = str.charCodeAt(i); 
+        // Shift_JIS: 0x0 ~ 0x80, 0xa0 , 0xa1 ~ 0xdf , 0xfd ~ 0xff 
+        // Unicode : 0x0 ~ 0x80, 0xf8f0, 0xff61 ~ 0xff9f, 0xf8f1 ~ 0xf8f3 
+            if ( (c >= 0x0 && c < 0x81) || (c == 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) { 
+                r += 1; 
+            } else { 
+                r += 2; 
+            } 
+        } 
+        return r; 
+    }
+    createInput(){
+        var parent = $("#inputBox");
+        this.count++;
+        var child = '<div class="form-group"  id="group'+ this.count +'">' +
+            ' <div class="input-group">'+
+            '  <span class="input-group-addon" data-toggle="tooltip" data-placement="left" '+
+            '    title="6文字以内の項目名称">項目名</span> '+
+            '  <input type="text" class="form-control" id="itemName'+ this.count +'" size="8"> '+
+            '  <span class="input-group-addon" data-toggle="tooltip" data-placement="top" '+
+            '    title="3桁以内">サイズ</span>'+
+            '  <input type="text" class="form-control" id="itemSize'+ this.count +'" size="1" maxlength="3"> '+
+           ' </div>'+
+           ' <div class="btn-group" data-toggle="buttons">'+
+           '   <label class="btn btn-info active">'+
+           '     <input type="radio" name="space'+ this.count +'" id="option1'+ this.count +'" autocomplete="off" value="0" checked> 半角'+
+           '   </label>'+
+           '   <label class="btn btn-info">'+
+           '     <input type="radio" name="space'+ this.count +'" id="option2'+ this.count +'" autocomplete="off" value="1"> 全角'+
+           '   </label>'+
+           ' </div>'+
+           '   <span class="glyphicon glyphicon-exclamation-sign"'+
+           '     data-toggle="tooltip" data-placement="top" '+
+           '     title="半角スペース・全角スペースでサイズを補足します"></span>'+
+           '  <button class="btn glyphicon glyphicon-plus circle" type="button" onclick="init.addAction('+ this.count +');"></button>'+
+           '  </div>';
+           parent.append(child);
+           $('[data-toggle="tooltip"]').tooltip();
+        
+    }
+    
+    removeAction(flag){
+        var temp = "#group"+ String(flag);
+        $(temp).remove();
+    }
+    
+    addAction(flag){
+        var itemName = "#itemName" + String(flag);
+        itemName = $(itemName).val();
+        itemName = itemName || "項目" + String(flag);
+        var itemSize = "#itemSize" + String(flag);
+        itemSize = $(itemSize).val();
+        if(!parseInt(itemSize)){
+            $("#msg").html("サイズの入力に誤りがあります。");
+            return;
+        }
+        var html = '<div class="input-group">' +
+        ' <span class="input-group-addon item-name" data-toggle="tooltip" data-placement="left"'+ 
+        ' title="'+ itemSize +'バイト">' + itemName +'</span><input type="text" class="form-control ipt"'+
+        ' maxlength="'+ itemSize +'" id="value'+ String(flag) +'" onchange="init.countResult();"> '+
+        ' </div><span class="glyphicon glyphicon-exclamation-sign" data-toggle="tooltip" data-placement="top"' +
+        ' title="未満部分は自動的にスペースで補足しますので、内容だけ入力すればよいです"></span>' +
+        ' <button class="btn glyphicon glyphicon-minus circle" type="button"'+
+        ' onclick="init.removeAction('+ String(flag) +');"></button>';
+        
+        $("#group"+ String(flag)).html(html);
+        $('[data-toggle="tooltip"]').tooltip();
+        console.log(itemName + itemSize);
+    }
+}
+$('body').ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 title">
+      <h1>废弃，不用</h1>
+        <h3><small class="glyphicon glyphicon-exclamation-sign"
+         data-toggle="tooltip" data-placement="left" 
+         title="ここでは実行状況についての説明的なメッセージが表示されます"></small>
+         <span id="msg">メッセージはここで表示します。</span></h3>
+        <hr>
+      </div>
+      <div class="col-md-6">
+        <div class="form-inline" id="inputBox">
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon" data-toggle="tooltip" data-placement="left" 
+              title="予想サイズを入力すると動的に検証することができます">予想サイズ</span> 
+              <input type="text" class="form-control" maxlength="6" id="wantedSize"> 
+              <span class="input-group-addon">バイト</span>
+            </div>
+              <button class="btn" id="clear">クリア</button>
+         </div>
+        
+          <div class="form-group"  id="group1">
+            <div class="input-group">
+              <span class="input-group-addon" data-toggle="tooltip" data-placement="left" 
+                title="6文字以内の項目名称">項目名</span> 
+              <input type="text" class="form-control" id="itemName1" size="8"> 
+              <span class="input-group-addon" data-toggle="tooltip" data-placement="top" 
+                title="3桁以内">サイズ</span>
+              <input type="text" class="form-control" id="itemSize1" size="1" maxlength="3"> 
+            </div>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info active">
+                <input type="radio" name="space1" id="option11" autocomplete="off" value="0" checked> 半角
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" name="space1" id="option21" autocomplete="off" value="1"> 全角
+              </label>
+            </div>
+              <span class="glyphicon glyphicon-exclamation-sign"
+                data-toggle="tooltip" data-placement="top" 
+                title="半角スペース・全角スペースでサイズを補足します"></span>
+             <button class="btn glyphicon glyphicon-plus circle" type="button" onclick="init.addAction(1);"></button>
+          </div>
+          
+          
+          
+          
+        </div>
+        <hr>
+        <button class="btn btn-link" onclick="init.createInput()">ここをクリックして新しい項目を追加できます。</button>
+      </div>
+         
+         
+      <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">作成結果は下記のテキストエリアに書き込みます。</div>
+            <textarea class="form-control" rows="10" cols="" id="result"></textarea>
+        </div>
+        <p>
+            予想サイズ：<span class="text-primary" id="yosouSize">0</span>バイト、
+            実際サイズ：<span class="text-primary" id="jissaiSize">0</span>バイト、
+            差分サイズ：<span class="red" id="sabunSize">0</span>バイト。
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  <script type="text/javascript">
+  var init = new InitUtil();
+  </script>
+</body>
+</html>
