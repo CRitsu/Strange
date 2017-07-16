@@ -2,7 +2,7 @@
 
 ### 建站练习
 
-> [DEMO展示](https://critsu.github.io/Strange/DEMO/home.html)  
+> [DEMO展示](https://critsu.github.io/Strange/DEMO/webapp/home.html)  
 完成度暂时只有首页框架及登录验证相关。
 
 * JAVA
