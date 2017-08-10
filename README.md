@@ -44,6 +44,8 @@ HTML头部导入顺序
 
 >   Github Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...
 
+> 尝试使用IDEA中..
+
 ### 资料和一些备忘
 * [pushState 和 ajax](dummy)  
 
