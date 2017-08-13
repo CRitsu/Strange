@@ -39,9 +39,9 @@ public class HomeControllerTest {
     
     @Test
     public void testSpittleController() throws Exception {
-        List<Spittle> expected = createSpittles(5);
+        List<Spittle> expected = createSpittles(10);
         SpittleRepository mockRepository = Mockito.mock(SpittleRepository.class);
-        Mockito.when(mockRepository.findSpittles(99999999L, 5))
+        Mockito.when(mockRepository.findSpittles(99999999L, 10))
             .thenReturn(expected);
         SpittleController controller = new SpittleController(mockRepository);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -50,7 +50,7 @@ public class HomeControllerTest {
             .andExpect(MockMvcResultMatchers.view().name("spittles"))
             .andExpect(MockMvcResultMatchers.model().attributeExists("spittlesList"))
             .andExpect(MockMvcResultMatchers.model().attribute("spittlesList",
-                    Matchers.hasItem(expected)));
+                    Matchers.hasItems(expected.toArray())));
         
         
     }

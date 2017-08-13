@@ -1,20 +1,23 @@
 # Strange
 
-### 建站练习
+For study.
 
-> [DEMO展示](https://critsu.github.io/Strange/tree/master/DEMO/webapp/home.html)  
-完成度暂时只有首页框架及登录验证相关。
+> [DEMO展示](转移中)  
+完成度：首页框架及登录验证相关。
 
-* JAVA
-    * Spring
-    * Spring MVC
-    * iBats
+## 使用的工具
+JAVA相关。预计如下。
+* Spring
+* Spring MVC
+* iBats
 
-* HTML
-    * JS（JQ）
-    * CSS
+HTML如下。
+* JS（JQ插件）
+* CSS（Bootstrap框架）
 
-工具：Eclipse
+IDE
+* Eclipse
+* IDEA
 
 框架
 * bootstrap
@@ -23,35 +26,25 @@
 * HTML DEMO制作
 * 研究Spring框架ing
 
-HTML头部导入顺序
-```html
-<link rel="stylesheet" type="text/css" href="res/reset.css">
-<link rel="stylesheet" type="text/css" href="res/css/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="res/css/bootstrap-theme.css">
-<link rel="stylesheet" type="text/css" href="res/strange.css">
-<script type="text/javascript" src="res/jquery-3.1.1.js"></script>
-<script type="text/javascript" src="res/js/bootstrap.js"></script>
-<script type="text/javascript" src="res/strange.js"></script>
-```
-Signed-off
-### 说明传送门
-* [JS部分说明](../Strange_DOC&DEMO/DOC/JS_DOC.md)
 
-### 碎碎念
+
+### 说明传送门
+* [文档存放处](refactor)
+
+
+### 以下都是碎碎念
 > ...eclipse之前的弄的乱七八糟一直报错，故重新装了一遍，弄颜色弄了半天。  
     总结经验：自带的黑色主题和color插件不能同时保存，自带主题会覆盖插件的主题。  
     解决方法：去color插件官网下载epf格式的主题，eclipse切到黑色主题后导入epf配置即可生效。  
+*2017年8月13日20:55:13*
 
->   GitHub Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...
+> GitHub Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...  
+*2017年8月13日20:55:13*
 
-> 尝试使用IDEA中..
+> 尝试使用IDEA中..  
+*2017年8月13日20:55:13*
 
-### 资料和一些备忘
-* [pushState 和 ajax](dummy)  
+> 发现IDEA比eclipse方便，花了些时间转移项目以及熟悉新IDE...  
+*2017年8月13日20:55:01*
 
-这里打算用pushState和ajax实现无刷单页网站。  
-（这里是个假连接，等有时间整理出来 TODO ）
 
-* [Spring学习的一些笔记](../Strange_DOC&DEMO/DOC/Spring_notes.md)
-
-记录一些使用Spring时遇到的问题和解决方法。
