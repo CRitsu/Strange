@@ -35,7 +35,7 @@ HTML头部导入顺序
 ```
 Signed-off
 ### 说明传送门
-* [JS部分说明](DOC/JS_DOC.md)
+* [JS部分说明](../Strange_DOC&DEMO/DOC/JS_DOC.md)
 
 ### 碎碎念
 > ...eclipse之前的弄的乱七八糟一直报错，故重新装了一遍，弄颜色弄了半天。  
@@ -52,6 +52,6 @@ Signed-off
 这里打算用pushState和ajax实现无刷单页网站。  
 （这里是个假连接，等有时间整理出来 TODO ）
 
-* [Spring学习的一些笔记](DOC/Spring_notes.md)
+* [Spring学习的一些笔记](../Strange_DOC&DEMO/DOC/Spring_notes.md)
 
 记录一些使用Spring时遇到的问题和解决方法。
