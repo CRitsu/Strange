@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <spring.ver>4.0.0.RELEASE</spring.ver>
+    <spring.ver>4.3.10.RELEASE</spring.ver>
   </properties>
 
   <dependencies>
@@ -136,7 +136,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <scope>test</scope>
+      <!--<scope>test</scope>-->
     </dependency>
     
     <dependency>
@@ -174,15 +174,15 @@
     </profile>
   </profiles>
   <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
-        <configuration>
-        </configuration>
-      </plugin>
-      
-    </plugins>
+    <!--<plugins>-->
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+        <!--<version>2.10.4</version>-->
+        <!--<configuration>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
+      <!---->
+    <!--</plugins>-->
   </reporting>
 </project>

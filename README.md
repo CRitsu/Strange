@@ -33,7 +33,7 @@ HTML头部导入顺序
 <script type="text/javascript" src="res/js/bootstrap.js"></script>
 <script type="text/javascript" src="res/strange.js"></script>
 ```
-
+Signed-off
 ### 说明传送门
 * [JS部分说明](DOC/JS_DOC.md)
 
@@ -42,7 +42,7 @@ HTML头部导入顺序
     总结经验：自带的黑色主题和color插件不能同时保存，自带主题会覆盖插件的主题。  
     解决方法：去color插件官网下载epf格式的主题，eclipse切到黑色主题后导入epf配置即可生效。  
 
->   Github Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...
+>   GitHub Pages 不允许post方法，所以DEMO的登陆按钮会跳405页面去，真是悲伤...
 
 > 尝试使用IDEA中..
 

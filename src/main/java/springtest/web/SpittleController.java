@@ -24,7 +24,7 @@ public class SpittleController {
     @RequestMapping(method=RequestMethod.GET)
     public String toSpittles(
             @RequestParam(value="max", defaultValue=MAX_VALUE) long max,
-            @RequestParam(value="count", defaultValue="20") int count,
+            @RequestParam(value="count", defaultValue="10") int count,
             Model model) {
         model.addAttribute("spittlesList", spittleRepository.findSpittles(max, count));
         return "spittles";
