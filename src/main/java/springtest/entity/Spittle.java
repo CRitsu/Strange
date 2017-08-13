@@ -11,11 +11,17 @@ public class Spittle {
     private final Date time;
     private Double latitude;
     private Double longitude;
-    
+
     public Spittle(String message, Date time) {
         this.message = message;
         this.time = time;
         this.id = Long.valueOf((long)(Math.random() * 1000));
+    }
+
+    public Spittle(String message, Date time, Long id) {
+        this.message = message;
+        this.time = time;
+        this.id = id;
     }
 
     public Long getId() {
@@ -47,6 +53,6 @@ public class Spittle {
     public boolean equals(Object that) {
         return EqualsBuilder.reflectionEquals(this, that, "id","time");
     }
-    
-    
+
+
 }
