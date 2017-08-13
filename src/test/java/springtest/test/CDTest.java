@@ -11,12 +11,11 @@ import springtest.MediaPlayer;
 
 @ContextConfiguration(classes=CDImpl.class)
 public class CDTest {
-    private MediaPlayer player;
-    
+
     @Test
     public void testMethod(){
         ApplicationContext ac = new AnnotationConfigApplicationContext(CDConfig.class);
-        player = (MediaPlayer) ac.getBean("player");
+        MediaPlayer player = (MediaPlayer) ac.getBean("player");
         player.playTheCd();
         
         ((AnnotationConfigApplicationContext)ac).close();

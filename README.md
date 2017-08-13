@@ -2,7 +2,7 @@
 
 For study.
 
-> [DEMO展示](转移中)  
+> [DEMO展示](https://critsu.github.io/Strange.DOCxDEMO/DEMO/home.html)  
 完成度：首页框架及登录验证相关。
 
 ## 使用的工具
@@ -29,7 +29,7 @@ IDE
 
 
 ### 说明传送门
-* [文档存放处](refactor)
+* [文档存放处](https://critsu.github.io/Strange.DOCxDEMO/)
 
 
 ### 以下都是碎碎念

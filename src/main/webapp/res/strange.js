@@ -249,11 +249,11 @@ var LogonUtil = function(){
         var icon = (FEEDBACK_ERROR === result && ERROR_ICON)
                 || (FEEDBACK_SUCCESS === result && SUCCESS_ICON) || "";
         $id.attr("class").indexOf(remove)
-                && $id.removeClass(remove);
+                && $id.removeClass(remove); // if true then remove
         $id.addClass(result);
-        $id.attr("class").indexOf(removeIcon)
-                && $id.removeClass(removeIcon);
-        $id.addClass(icon);
+        $id_icon.attr("class").indexOf(removeIcon)
+                && $id_icon.removeClass(removeIcon);
+        $id_icon.addClass(icon);
         // OK或error存在，需要输出错误信息
         flag.put(INPUT_STATES,true);
     };
