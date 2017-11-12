@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration status="debug" monitorInternal="30">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{1} - %msg%n" />
+        </Console>
+        <RollingFile name="RollingFile" fileName="../logs/test/app.log"
+                     filePattern="../log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{1} - %msg%n"/>
+            <SizeBasedTriggeringPolicy size="50MB"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="springtest.aspect.LogAspect" level="INFO" additivity="true">
+            <AppenderRef ref="RollingFile" />
+        </Logger>
+        <Logger name="org.springframework" level="debug" />
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

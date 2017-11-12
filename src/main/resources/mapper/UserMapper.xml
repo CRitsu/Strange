@@ -1,0 +1,70 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.critsu.mapper.UserMapper">
+
+    <resultMap id="User" type="UserEntity" >
+        <id property="id" column="friend_id" />
+        <result property="username" column="username" />
+        <result property="mail" column="mail" />
+        <result property="tel" column="tel" />
+        <result property="avatar" column="avatar" />
+        <result property="createdTime" column="created_time" />
+        <result property="lastUpdateTime" column="last_update_time" />
+    </resultMap>
+
+    <resultMap id="Friend" type="FriendEntity" >
+        <id property="userId" column="user_id" />
+        <result property="friendId" column="friend_id" />
+        <result property="addTime" column="add_time" />
+        <result property="info.id" column="friend_id" />
+        <result property="info.username" column="username" />
+        <result property="info.mail" column="mail" />
+        <result property="info.tel" column="tel" />
+        <result property="info.avatar" column="avatar" />
+        <result property="info.createdTime" column="created_time" />
+        <result property="info.lastUpdateTime" column="last_update_time" />
+    </resultMap>
+    
+    <sql id="users_column">
+        ${alias}.user_id,
+        ${alias}.username,
+        ${alias}.avatar,
+        ${alias}.mail,
+        ${alias}.tel,
+        ${alias}.created_time,
+        ${alias}.last_update_time
+    </sql>
+
+
+    <select id="getUser" resultMap="User" parameterType="java.lang.Long" >
+        SELECT
+            <include refid="users_column" ><property name="alias" value="users" /></include>
+        FROM
+            users
+        WHERE
+            user_id = #{id}
+    </select>
+
+    <select id="getFriends" resultMap="Friend" parameterType="java.lang.Long">
+        SELECT
+            f.user_id,
+            f.friend_id,
+            f.add_time,
+            <include refid="users_column" ><property name="alias" value="u" /></include>
+        FROM
+            users u, friends f
+        WHERE
+            u.user_id = f.friend_id and f.black_flg = '0' and f.user_id = #{id}
+    </select>
+
+    <select id="auth" resultType="int">
+        SELECT count(user_id) FROM users WHERE user_id = #{id} AND password = #{password}
+    </select>
+
+    <select id="getId" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT user_id FROM users WHERE username = #{username}
+    </select>
+
+</mapper>
