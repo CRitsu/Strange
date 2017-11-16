@@ -8,7 +8,7 @@ CREATE TABLE locked_user(
   times int DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO locked_user(user_id, unlock_time) VALUES (10000, current_timestamp);
+INSERT INTO locked_user(user_id, unlock_time) VALUES (90000, '9999-12-31 23:59:59');
 
 # 用户id
 # 解锁时间

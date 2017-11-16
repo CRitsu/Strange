@@ -4,8 +4,25 @@ import io.critsu.entities.User;
 
 public interface UserRepository {
 
-    public User getUser(long id);
+    /**
+     * 通过id获得用户信息
+     * @param id 检索id
+     * @return 用户信息；如果不存在则返回null
+     */
+    User getUser(long id);
 
+    /**
+     * 检查用户名是否存在并返回用户id
+     * @param username 用来检查的用户名
+     * @return 0 如果不存在；否则返回用户id
+     */
+    long checkUsernameAndGetId(String username);
 
+    /**
+     * 用户认证
+     * @param user 认证信息，至少包括用户名和秘密
+     * @return true如果通过；false不通过
+     */
+    boolean userAuth(User user);
 
 }

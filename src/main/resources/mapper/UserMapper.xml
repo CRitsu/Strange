@@ -26,6 +26,8 @@
         <result property="info.createdTime" column="created_time" />
         <result property="info.lastUpdateTime" column="last_update_time" />
     </resultMap>
+
+    <!--分界线 以下为sql片段-->
     
     <sql id="users_column">
         ${alias}.user_id,
@@ -37,6 +39,7 @@
         ${alias}.last_update_time
     </sql>
 
+    <!--分界线 以下为查询语句-->
 
     <select id="getUser" resultMap="User" parameterType="java.lang.Long" >
         SELECT
@@ -60,11 +63,79 @@
     </select>
 
     <select id="auth" resultType="int">
-        SELECT count(user_id) FROM users WHERE user_id = #{id} AND password = #{password}
+        SELECT count(user_id)
+        FROM users
+        WHERE user_id = #{id} AND password = #{password}
     </select>
 
     <select id="getId" parameterType="java.lang.String" resultType="java.lang.Long">
-        SELECT user_id FROM users WHERE username = #{username}
+        SELECT user_id
+        FROM users
+        WHERE username = #{username}
     </select>
+
+    <select id="checkRegistered" parameterType="UserEntity" resultType="int">
+        SELECT count(user_id)
+        FROM users
+        WHERE username = #{username} OR mail = #{mail} OR tel = #{tel}
+    </select>
+
+    <select id="checkFriendStatus" resultType="java.lang.Integer" >
+        SELECT black_flg FROM  friends WHERE user_id = #{userId} AND friend_id = #{friendId}
+    </select>
+
+    <select id="checkLockedTimes" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT times FROM locked_user WHERE user_id = #{userId}
+    </select>
+
+    <!--分界线 以下为插入语句-->
+
+
+    <insert id="saveUser" parameterType="UserEntity" keyProperty="id" useGeneratedKeys="true" >
+        INSERT INTO users (username, password, avatar, mail, tel)
+        VALUE (#{username}, #{password}, #{avatar}, #{mail}, #{tel})
+    </insert>
+
+    <insert id="addFriend" >
+        INSERT INTO friends (user_id, friend_id) VALUES (#{userId}, #{friendId})
+    </insert>
+
+    <insert id="addBlackList" >
+        INSERT INTO friends (user_id, friend_id, black_flg) VALUES (#{userId}, #{blackId}, '1')
+    </insert>
+
+    <insert id="lockUserByInsert" >
+        INSERT INTO locked_user (user_id, unlock_time, times, lock_flg) VALUES (#{userId}, #{unlockTime}, 1, '1');
+    </insert>
+
+
+    <!--分界线 以下为更新语句-->
+
+    <update id="lockUserByUpdate" >
+        UPDATE locked_user SET lock_flg = '1', unlock_time = #{unlockTime}, times = #{times} WHERE user_id = #{userId}
+    </update>
+
+    <update id="unLockUser" parameterType="java.lang.Long" >
+        UPDATE locked_user SET lock_flg = '0' WHERE user_id = #{userId}
+    </update>
+
+
+    <!--分界线 以下为删除语句-->
+
+    <delete id="deleteUser" parameterType="java.lang.Long" >
+        DELETE FROM users WHERE user_id = #{id}
+    </delete>
+
+    <delete id="removeFriend" >
+        DELETE FROM friends WHERE user_id = #{userId} AND friend_id = #{friendId} AND black_flg = '0'
+    </delete>
+
+    <delete id="removeBlackList" >
+        DELETE FROM friends WHERE user_id = #{userId} AND friend_id = #{blackId} AND black_flg = '1'
+    </delete>
+
+    <delete id="clearLockedHistory" parameterType="java.lang.String">
+        DELETE FROM locked_user WHERE unlock_time &lt; #{baseTime}
+    </delete>
 
 </mapper>
