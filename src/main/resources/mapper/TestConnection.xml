@@ -4,7 +4,7 @@
 
 <mapper namespace="test.TestConnection">
     <select id="TestConnect" resultType="int" >
-        SELECT 1 FROM users WHERE 1=1
+        SELECT 1
     </select>
     <select id="AllUsers" resultType="io.critsu.entities.User">
         SELECT user_id id, username, password, avatar, mail, tel, created_time createdTime, last_update_time lastUpdateTime FROM users

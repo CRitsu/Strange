@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.critsu.mapper.AuthorityMapper">
+
+    <resultMap id="Authority" type="AuthorityEntity" >
+        <id property="userId" column="user_id" />
+        <result property="authName" column="auth_name" />
+        <result property="authValue" column="auth_value" />
+    </resultMap>
+
+    <!--分界线 以下查询语句-->
+
+    <select id="getAuthority" parameterType="java.lang.Long" resultMap="Authority" >
+        SELECT user_id, auth_name, auth_value FROM authority WHERE user_id = #{userId}
+    </select>
+
+    <select id="getAuthorityByName" resultType="java.lang.String" >
+        SELECT auth_value FROM authority WHERE user_id = #{userId} AND auth_name = #{authName}
+    </select>
+
+
+
+    <!--分界线 以下插入语句-->
+
+    <insert id="setAuthorities" parameterType="java.util.List" >
+        INSERT INTO authority(user_id, auth_name, auth_value) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+          (#{item.userId}, #{item.authName}, #{item.authValue})
+        </foreach>
+    </insert>
+
+    <insert id="setAuthority" parameterType="AuthorityEntity" >
+        INSERT INTO authority(user_id, auth_name, auth_value) VALUES
+        (#{userId}, #{authName}, #{authValue})
+    </insert>
+
+    <!--分界线 以下更新语句-->
+    <update id="updateAuthority" parameterType="AuthorityEntity" >
+        UPDATE authority SET auth_value = #{authValue} WHERE user_id = #{userId} AND auth_name = #{authName}
+    </update>
+
+
+    <!--分界线 以下删除语句-->
+
+    <delete id="removeAuthorityById" parameterType="java.lang.Long" >
+        DELETE FROM authority WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="removeAuthorityByName" >
+        DELETE FROM authority WHERE user_id = #{userId} AND auth_name = #{authName}
+    </delete>
+
+
+</mapper>

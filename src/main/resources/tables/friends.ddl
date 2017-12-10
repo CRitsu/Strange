@@ -5,7 +5,7 @@ CREATE TABLE friends(
   user_id INT NOT NULL ,
   friend_id INT NOT NULL ,
   black_flg CHAR(1) DEFAULT 0,
-  add_time TIMESTAMP DEFAULT current_timestamp
+  add_time TIMESTAMP(3) DEFAULT current_timestamp(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE INDEX friends_index ON friends(user_id);

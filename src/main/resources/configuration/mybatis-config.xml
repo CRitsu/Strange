@@ -5,9 +5,18 @@
 
 <configuration>
 
+    <settings>
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
     <typeAliases>
         <typeAlias type="io.critsu.entities.User" alias="UserEntity" />
         <typeAlias type="io.critsu.entities.Friend" alias="FriendEntity" />
+        <typeAlias type="io.critsu.entities.Article" alias="ArticleEntity" />
+        <typeAlias type="io.critsu.entities.Comment" alias="CommentEntity" />
+        <typeAlias type="io.critsu.entities.AuthorityOrigin" alias="AuthorityEntity" />
+        <typeAlias type="io.critsu.entities.Attribute" alias="AttributeEntity" />
     </typeAliases>
+
+
 
 </configuration>

@@ -1,16 +1,24 @@
 package io.critsu.entities;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Article {
 
     private long userId;
     private long articleId;
     private Timestamp createdTime;
-    private int likeCount;
     private String articleBody;
     private String image;
-    private int deleteFlg;
+    /**
+     * like数 默认位0
+     */
+    private int likeCount = 0;
+    /**
+     * 删除flag默认为0；不从DB取值；删除时设置为1
+     */
+    private int deleteFlg = 0;
+    private List<Comment> comments;
 
     @Override
     public String toString() {
@@ -22,6 +30,7 @@ public class Article {
                 ", articleBody='" + articleBody + '\'' +
                 ", image='" + image + '\'' +
                 ", deleteFlg=" + deleteFlg +
+                ", comments=" + comments +
                 '}';
     }
 
@@ -79,5 +88,13 @@ public class Article {
 
     public void setDeleteFlg(int deleteFlg) {
         this.deleteFlg = deleteFlg;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

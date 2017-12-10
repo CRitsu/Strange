@@ -11,7 +11,7 @@ create TABLE users (
   avatar VARCHAR(255) DEFAULT '' COMMENT '用户头像路径',
   mail VARCHAR(128) UNIQUE ,
   tel VARCHAR(11) UNIQUE ,
-  created_time TIMESTAMP DEFAULT current_timestamp COMMENT '创建时间',
+  created_time TIMESTAMP(3) DEFAULT current_timestamp(3) COMMENT '创建时间',
   last_update_time TIMESTAMP NOT NULL DEFAULT '2017-11-12 10:17:00' COMMENT '更新时间'
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 

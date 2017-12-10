@@ -5,7 +5,7 @@
 <mapper namespace="io.critsu.mapper.UserMapper">
 
     <resultMap id="User" type="UserEntity" >
-        <id property="id" column="friend_id" />
+        <id property="id" column="u_uid" />
         <result property="username" column="username" />
         <result property="mail" column="mail" />
         <result property="tel" column="tel" />
@@ -15,22 +15,16 @@
     </resultMap>
 
     <resultMap id="Friend" type="FriendEntity" >
+        <id property="friendId" column="friend_id" />
         <id property="userId" column="user_id" />
-        <result property="friendId" column="friend_id" />
         <result property="addTime" column="add_time" />
-        <result property="info.id" column="friend_id" />
-        <result property="info.username" column="username" />
-        <result property="info.mail" column="mail" />
-        <result property="info.tel" column="tel" />
-        <result property="info.avatar" column="avatar" />
-        <result property="info.createdTime" column="created_time" />
-        <result property="info.lastUpdateTime" column="last_update_time" />
+        <association property="info" resultMap="User" />
     </resultMap>
 
     <!--分界线 以下为sql片段-->
     
     <sql id="users_column">
-        ${alias}.user_id,
+        ${alias}.user_id    u_uid,
         ${alias}.username,
         ${alias}.avatar,
         ${alias}.mail,
@@ -88,12 +82,17 @@
         SELECT times FROM locked_user WHERE user_id = #{userId}
     </select>
 
+
+
     <!--分界线 以下为插入语句-->
 
 
     <insert id="saveUser" parameterType="UserEntity" keyProperty="id" useGeneratedKeys="true" >
-        INSERT INTO users (username, password, avatar, mail, tel)
-        VALUE (#{username}, #{password}, #{avatar}, #{mail}, #{tel})
+        INSERT INTO users (username, password, avatar, mail, tel, created_time)
+        VALUE (#{username}, #{password}, #{avatar}, #{mail}, #{tel},
+          <if test="createdTime != null" >#{createdTime}</if>
+          <if test="createdTime == null" >current_timestamp(3)</if>
+        )
     </insert>
 
     <insert id="addFriend" >

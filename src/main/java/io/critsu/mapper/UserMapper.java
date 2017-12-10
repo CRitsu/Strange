@@ -103,7 +103,7 @@ public interface UserMapper {
     int removeBlackList(@Param("userId") long uid, @Param("blackId") long bid);
 
     /**
-     * 锁定用户第一步
+     * 锁定用户第一步<br>
      * 检查锁定次数
      * @param uid 检查用户id
      * @return 无锁定历史为null；否则返回锁定次数（大于0）
@@ -111,8 +111,8 @@ public interface UserMapper {
     Integer checkLockedTimes(long uid);
 
     /**
-     * 锁定用户第二步 A
-     * 该用户无锁定记录时
+     * 锁定用户第二步 A<br>
+     * 该用户无锁定记录时<br>
      * 锁定用户并设置锁定次数为1
      * @param uid 锁定用户id
      * @param unlockTime 解锁时间
@@ -121,7 +121,7 @@ public interface UserMapper {
     int lockUserByInsert(@Param("userId") long uid, @Param("unlockTime") String unlockTime);
 
     /**
-     * 锁定用户第二步 B
+     * 锁定用户第二步 B<br>
      * 有锁定记录更新次数
      * @param uid 锁定用户id
      * @param unlockTime 解锁时间
@@ -131,9 +131,9 @@ public interface UserMapper {
     int lockUserByUpdate(@Param("userId") long uid, @Param("unlockTime") String unlockTime, @Param("times") int times);
 
     /**
-     * 清理给定时间之前的数据
-     * 通常为半年之前的数据
-     * 基准时间的格式为 YYYY-MM-DD
+     * 清理给定时间之前的数据<br>
+     * 通常为半年之前的数据<br>
+     * 基准时间的格式为 YYYY-MM-DD<br>
      * 清理用户锁定历史记录
      * @param baseTime 基准时间
      * @return 影响行数
@@ -146,5 +146,6 @@ public interface UserMapper {
      * @return 影响行数
      */
     int unLockUser(long uid);
+
 
 }

@@ -4,4 +4,238 @@
 
 <mapper namespace="io.critsu.mapper.ArticleMapper">
 
+    <resultMap id="Article" type="ArticleEntity" >
+        <id property="articleId" column="article_id" />
+        <result property="userId" column="user_id" />
+        <result property="likeCount" column="like_count" />
+        <result property="articleBody" column="article_body" />
+        <result property="image" column="image" />
+        <result property="createdTime" column="created_time" />
+        <collection property="comments" resultMap="Comment" />
+    </resultMap>
+
+    <resultMap id="Comment" type="CommentEntity" >
+        <id property="commentId" column="c_cid" />
+        <result property="articleId" column="c_aid" />
+        <result property="userId" column="c_uid" />
+        <result property="commentBody" column="c_cb" />
+        <result property="likeCount" column="c_lc" />
+        <result property="postTime" column="c_pt" />
+    </resultMap>
+
+    <sql id="article_column" >
+        ${alias}.article_id,
+        ${alias}.user_id,
+        ${alias}.created_time,
+        ${alias}.like_count,
+        ${alias}.article_body,
+        ${alias}.image
+    </sql>
+
+    <!--comment 中存在与 article 表中同名的字段，定义别名以区分-->
+    <sql id="comment_column" >
+        ${alias}.article_id     c_aid,
+        ${alias}.user_id        c_uid,
+        ${alias}.comment_id     c_cid,
+        ${alias}.comment_body   c_cb,
+        ${alias}.post_time      c_pt,
+        ${alias}.like_count     c_lc
+    </sql>
+
+    <sql id="origin_column" >
+        ${alias}.article_id,
+        ${alias}.user_id,
+        ${alias}.comment_id,
+        ${alias}.comment_body,
+        ${alias}.post_time,
+        ${alias}.like_count
+    </sql>
+
+    <!--分界线 以下查询语句-->
+
+    <select id="getArticle" resultMap="Article">
+        SELECT
+        <include refid="article_column">
+            <property name="alias" value="article"/>
+        </include>
+        ,
+        <include refid="comment_column">
+            <property name="alias" value="comments"/>
+        </include>
+        FROM article LEFT JOIN
+        (SELECT
+        <include refid="origin_column">
+            <property name="alias" value="c"/>
+        </include>
+        FROM comments c WHERE <![CDATA[ c.delete_flg <> 1 ]]>) comments
+        ON article.article_id = comments.article_id
+        WHERE article.article_id = #{articleId} AND
+        <![CDATA[ article.delete_flg <> 1]]>
+        ORDER BY comments.comment_id DESC LIMIT 0,
+        <choose>
+            <when test="size != null and size > 0">#{size}</when>
+            <otherwise>20</otherwise>
+        </choose>
+    </select>
+
+    <select id="getCommentsCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT count(comment_id)
+        FROM comments
+        WHERE article_id = #{articleId} AND <![CDATA[comments.delete_flg <> 1
+        ]]>
+    </select>
+
+    <select id="getComments" resultMap="Comment">
+        SELECT
+        <include refid="comment_column">
+            <property name="alias" value="comments"/>
+        </include>
+        FROM comments WHERE article_id = #{articleId} AND <![CDATA[comments.delete_flg <> 1]]>
+        <if test="startId !=null">
+            <![CDATA[ AND comment_id < #{startId} ]]>
+        </if>
+        ORDER BY comment_id DESC LIMIT 0,
+        <choose>
+            <when test="size != null">#{size}</when>
+            <otherwise>20</otherwise>
+        </choose>
+    </select>
+
+    <select id="getArticles" resultMap="Article">
+        SELECT
+        <include refid="article_column">
+            <property name="alias" value="a"/>
+        </include>
+        ,
+        <include refid="comment_column">
+            <property name="alias" value="c"/>
+        </include>
+        FROM article a,
+        (SELECT
+        <include refid="origin_column">
+            <property name="alias" value="c1"/>
+        </include>
+        FROM comments c1 WHERE <![CDATA[ c1.delete_flg <> 1 ]]>) c
+        WHERE a.article_id = c.article_id AND <![CDATA[ a.delete_flg <> 1]]> AND
+        <if test="startId != null">
+            <![CDATA[ a.article_id < #{startId} AND ]]>
+        </if>
+        <choose>
+            <when test="articleSize != null and articleSize > 0">#{articleSize}</when>
+            <otherwise>20</otherwise>
+        </choose>
+        <![CDATA[ > (SELECT count(article_id) FROM article WHERE a.article_id > article_id )]]> AND
+        <choose>
+            <when test="commentSize != null">#{commentSize}</when>
+            <otherwise>20</otherwise>
+        </choose>
+        <![CDATA[ > (SELECT count(comment_id) FROM comments WHERE a.article_id = article_id AND comment_id > c.comment_id )]]>
+        ORDER BY a.article_id DESC, c.comment_id DESC
+    </select>
+
+    <select id="getArticleLikeCount" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT like_count
+        FROM article
+        WHERE article_id = #{articleId}
+    </select>
+
+    <select id="getCommentLikeCount" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT like_count
+        FROM comments
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <select id="getArticleLikeCount4Update" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT like_count
+        FROM article
+        WHERE article_id = #{articleId} FOR UPDATE
+    </select>
+
+    <select id="getComment" parameterType="java.lang.Long" resultMap="Comment">
+        SELECT
+        <include refid="comment_column">
+            <property name="alias" value="comments"/>
+        </include>
+        FROM comments
+        WHERE comment_id = #{commentId} AND <![CDATA[ comments.delete_flg <> 1]]>
+    </select>
+
+    <!--分界线 以下插入语句-->
+
+    <insert id="addComment" parameterType="CommentEntity" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comments (article_id, user_id, comment_body, like_count, post_time)
+        VALUES (#{articleId}, #{userId}, #{commentBody}, #{likeCount},
+        <if test="postTime != null">#{postTime}</if>
+        <if test="postTime == null">current_timestamp(3)</if>
+        )
+    </insert>
+
+    <insert id="addComments" parameterType="java.util.List">
+        INSERT INTO comments (article_id, user_id, comment_body, like_count, post_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.articleId}, #{item.userId}, #{item.commentBody}, #{item.likeCount},
+            <if test="item.postTime != null">#{item.postTime}</if>
+            <if test="item.postTime == null">current_timestamp(3)</if>
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addArticle" parameterType="ArticleEntity" useGeneratedKeys="true" keyProperty="articleId">
+        INSERT INTO article (user_id, created_time, like_count, article_body, image, delete_flg)
+        VALUES (#{userId}, #{createdTime}, 0, #{articleBody}, #{image}, 0)
+    </insert>
+
+    <!--分界线 以下更新语句-->
+
+    <update id="setArticleLikeCount">
+        UPDATE article
+        SET like_count = #{likeCount}
+        WHERE article_id = #{articleId}
+    </update>
+
+    <update id="setArticleLikeCountWithOptimisticLock">
+        UPDATE article
+        SET like_count = #{likeCount}
+        WHERE article_id = #{articleId} AND like_count = #{expectedCount}
+    </update>
+
+    <update id="setCommentLikeCount">
+        UPDATE comments
+        SET like_count = #{likeCount}
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <update id="setCommentLikeCountWithOptimisticLock">
+        UPDATE comments
+        SET like_count = #{likeCount}
+        WHERE comment_id = #{commentId} AND like_count = #{expectedCount}
+    </update>
+
+    <update id="markArticle" >
+        UPDATE article
+        SET delete_flg = #{deleteFlg}
+        WHERE article_id = #{articleId}
+    </update>
+
+    <update id="markComment" >
+        UPDATE comments
+        SET delete_flg = #{deleteFlg}
+        WHERE comment_id = #{commentId}
+    </update>
+
+
+    <!--分界线 以下删除语句-->
+
+    <delete id="removeArticle" parameterType="java.lang.Long">
+        DELETE FROM article
+        WHERE article_id = #{articleId}
+    </delete>
+
+    <delete id="removeComment" parameterType="java.lang.Long" >
+        DELETE FROM comments
+        WHERE comment_id = #{commentId}
+    </delete>
+
+
 </mapper>

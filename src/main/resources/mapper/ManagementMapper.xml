@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.critsu.mapper.ManagementMapper">
+
+    <resultMap id="Attribute" type="AttributeEntity" >
+        <id property="attribute" column="attribute" />
+        <result property="value" column="value" />
+    </resultMap>
+
+
+    <!--分界线 以下查询语句-->
+
+    <select id="getAllUsers" resultMap="io.critsu.mapper.UserMapper.User" >
+        SELECT <include refid="io.critsu.mapper.UserMapper.users_column" ><property name="alias" value="users" /></include>
+        FROM users
+        <if test="orderItem != null" >
+            ORDER BY #{orderItem} #{order}
+        </if>
+        <if test="limit != null" >
+            LIMIT #{limit}, #{pageSize}
+        </if>
+    </select>
+    
+    <select id="getAllAttributes" resultMap="Attribute" >
+        SELECT attribute, value FROM attribute
+    </select>
+
+
+    <!--分界线 以下插入语句-->
+
+    <insert id="addAttribute" parameterType="AttributeEntity" >
+        INSERT INTO attribute (attribute, value) VALUES (#{attribute}, #{value})
+    </insert>
+    
+    <insert id="addMoreAttributes" parameterType="java.util.List" >
+        INSERT INTO attribute (attribute, value) VALUES 
+            <foreach collection="list" separator="," item="item" index="index" >
+                (#{item.attribute}, #{item.value})
+            </foreach>
+    </insert>
+
+    <!--分界线 以下更新语句-->
+
+    <update id="updateAttribute" parameterType="AttributeEntity" >
+        UPDATE attribute SET value = #{value} WHERE attribute = #{attribute}
+    </update>
+
+    <!--分界线 以下删除语句-->
+
+    <delete id="removeAttribute" parameterType="java.lang.String" >
+        DELETE FROM attribute WHERE attribute = #{attribute}
+    </delete>
+    
+    <delete id="removeMoreAttributes" >
+        DELETE FROM attribute WHERE attribute IN (
+                <foreach collection="array" item="item" index="index" separator="," >
+                    #{item}
+                </foreach>
+        )
+    </delete>
+
+</mapper>

@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS article;
 CREATE TABLE article(
   user_id INT NOT NULL ,
   article_id BIGINT AUTO_INCREMENT PRIMARY KEY ,
-  created_time TIMESTAMP DEFAULT current_timestamp,
+  created_time TIMESTAMP(3) DEFAULT current_timestamp(3),
   like_count INT DEFAULT 0,
   article_body TEXT NOT NULL ,
   image VARCHAR(255) DEFAULT '',
@@ -13,6 +13,10 @@ CREATE TABLE article(
 
 INSERT INTO article (user_id, article_body)
 VALUES (10000, 'TEST_ARTICLE_CONTENT');
+INSERT INTO article (user_id, article_body)
+VALUES (10001, 'TEST_ARTICLE_CONTENT_11');
+INSERT INTO article (user_id, article_body)
+VALUES (10002, 'TEST_ARTICLE_CONTENT_22');
 
 # 用户id
 # 文章id

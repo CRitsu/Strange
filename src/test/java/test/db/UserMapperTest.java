@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static io.critsu.constant.StrangeConstant.*;
+import static io.critsu.constant.StrangeDefinition.*;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
@@ -41,19 +41,19 @@ public class UserMapperTest {
         List<Friend> friends = userMapper.getFriends(10000L);
         List<Friend> noFriends = userMapper.getFriends(20000L);
         assertNotNull(friends);
-        assertEquals(noFriends, new ArrayList<>());
+        assertEquals(new ArrayList<>(), noFriends);
         System.out.println(friends);
     }
 
     @Test
     public void testAuth() {
-        assertEquals(userMapper.auth(10000L,"TEST_USER_PASSWORD"), FLAG_ENABLE);
-        assertEquals(userMapper.auth(20001L,"TEST_USER_PASSWORD"), FLAG_DISABLE);
+        assertEquals(FLAG_ENABLE, userMapper.auth(10000L,"TEST_USER_PASSWORD"));
+        assertEquals(FLAG_DISABLE, userMapper.auth(20001L,"TEST_USER_PASSWORD"));
     }
 
     @Test
     public void testGetId() {
-        assertEquals(userMapper.getId("TEST_USER_STRANGE").longValue(), 10000L);
+        assertEquals(10000L, userMapper.getId("TEST_USER_STRANGE").longValue());
         assertNull(userMapper.getId("TEST_USER_STRANGE1"));
     }
 
@@ -69,8 +69,8 @@ public class UserMapperTest {
         noUser.setTel("TEST");
         noUser.setUsername("TEST");
 
-        assertEquals(userMapper.checkRegistered(user), FLAG_EXISTS);
-        assertEquals(userMapper.checkRegistered(noUser), FLAG_NOT_EXISTS);
+        assertEquals(FLAG_EXISTS, userMapper.checkRegistered(user));
+        assertEquals(FLAG_NOT_EXISTS, userMapper.checkRegistered(noUser));
     }
 
     @Test
@@ -83,16 +83,15 @@ public class UserMapperTest {
 
         int num = userMapper.saveUser(user);
 
-        assertNotEquals(user.getId(), 0L);
-        assertEquals(num, SINGLE_SUCCEED);
+        assertNotEquals(0L, user.getId());
+        assertEquals(SINGLE_SUCCEED, num);
 
         Long id = userMapper.getId("TEST_SAVE");
         assertNotNull(id);
 
         num = userMapper.deleteUser(id);
 
-        assertEquals(num, SINGLE_SUCCEED);
-
+        assertEquals(SINGLE_SUCCEED, num);
     }
 
     @Test
@@ -101,26 +100,33 @@ public class UserMapperTest {
         Integer num = userMapper.checkFriendStatus(a, b);
         assertNull(num);
         num = userMapper.addFriend(a, b);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
         // 检查白名单状态
         num = userMapper.checkFriendStatus(a, b);
-        assertEquals(num.intValue(), FLAG_DISABLE);
+        assertEquals(FLAG_DISABLE, num.intValue());
         num = userMapper.removeFriend(a, b);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
+        num = userMapper.checkFriendStatus(a, b);
+        assertNull(num);
     }
 
     @Test
     public void testAddAndRemoveBlacklist() {
-        long a = 20000L, b = 30000L;
+        long a = 20001L, b = 30001L;
+        // 未加黑名单前check 结果应该为null 非好友
         Integer num = userMapper.checkFriendStatus(a, b);
         assertNull(num);
+        // 添加黑名单check 结果应为1 黑名单
         num = userMapper.addBlackList(a, b);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
         // 检查黑名单状态
         num = userMapper.checkFriendStatus(a, b);
-        assertEquals(num.intValue(), FLAG_ENABLE);
+        assertEquals(FLAG_ENABLE, num.intValue());
+        // 删除黑名单 结果应为null 非好友
         num = userMapper.removeBlackList(a, b);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
+        num = userMapper.checkFriendStatus(a, b);
+        assertNull(num);
     }
 
     @Test
@@ -135,7 +141,7 @@ public class UserMapperTest {
         assertNull(num);
         // insert
         num = userMapper.lockUserByInsert(uid, simpleDateFormat.format(calendar.getTime()));
-        assertEquals(num.intValue(),SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
         // check again
         num = userMapper.checkLockedTimes(uid);
         assertEquals(num.intValue(),1);
@@ -144,23 +150,24 @@ public class UserMapperTest {
 
         // update
         num = userMapper.lockUserByUpdate(uid, simpleDateFormat.format(calendar.getTime()), num + 1);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
         // and check
         num = userMapper.checkLockedTimes(uid);
         assertEquals(num.intValue(),2);
         // unlock
         num = userMapper.unLockUser(uid);
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
 
         calendar.add(Calendar.YEAR, 1);
 
         // clear
         num = userMapper.clearLockedHistory(simpleDateFormat.format(calendar.getTime()));
-        assertEquals(num.intValue(), SINGLE_SUCCEED);
+        assertEquals(SINGLE_SUCCEED, num.intValue());
 
         // clear again
         num = userMapper.clearLockedHistory(simpleDateFormat.format(calendar.getTime()));
-        assertEquals(num.intValue(),SINGLE_FAILED);
+        assertEquals(SINGLE_FAILED, num.intValue());
     }
+
 
 }

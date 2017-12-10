@@ -11,10 +11,9 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="springtest.aspect.LogAspect" level="INFO" additivity="true">
-            <AppenderRef ref="RollingFile" />
+        <Logger name="io.critsu.mapper" level="TRACE" additivity="false">
+            <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="org.springframework" level="debug" />
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>

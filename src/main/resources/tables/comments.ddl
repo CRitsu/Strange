@@ -6,7 +6,7 @@ CREATE TABLE comments(
   user_id INT NOT NULL ,
   comment_id INT AUTO_INCREMENT PRIMARY KEY ,
   comment_body TEXT NOT NULL ,
-  post_time TIMESTAMP DEFAULT current_timestamp ,
+  post_time TIMESTAMP(3) DEFAULT current_timestamp(3) ,
   like_count INT DEFAULT 0,
   delete_flg CHAR(1) DEFAULT 0
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;

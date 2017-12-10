@@ -6,7 +6,7 @@ CREATE TABLE messages (
   from_id INT NOT NULL ,
   to_id INT NOT NULL ,
   message_body VARCHAR(999),
-  create_time TIMESTAMP
+  create_time TIMESTAMP(3)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 INSERT messages(from_id, to_id, message_body, create_time) VALUES (10000,10001,'TEST_MESSAGE',current_timestamp);

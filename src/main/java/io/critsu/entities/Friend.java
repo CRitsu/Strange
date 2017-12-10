@@ -1,13 +1,12 @@
 package io.critsu.entities;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 public class Friend {
 
     private long userId;
     private long friendId;
-    private int blackFlg;
+    private int blackFlg = 0;
     private Timestamp addTime;
     private User info;
 

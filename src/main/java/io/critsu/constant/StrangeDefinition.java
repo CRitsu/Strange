@@ -3,7 +3,7 @@ package io.critsu.constant;
 /**
  * 常数定义
  */
-public class StrangeConstant {
+public class StrangeDefinition {
 
     /**
      * 对所有0,1 flag定义
@@ -16,6 +16,16 @@ public class StrangeConstant {
      * 0 = false
      */
     public static final int FLAG_DISABLE = 0;
+
+    /**
+     * 删除flag 真 1
+     */
+    public static final int DELETE_FLAG_TRUE = 1;
+
+    /**
+     * 删除flag 假 0
+     */
+    public static final int DELETE_FLAG_FALSE = 0;
 
     /**
      * insert 执行单行插入正常时
@@ -44,4 +54,8 @@ public class StrangeConstant {
      * 不存在 = 0
      */
     public static final int FLAG_NOT_EXISTS = 0;
+
+
+    public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+
 }
