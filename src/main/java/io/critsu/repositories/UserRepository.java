@@ -16,13 +16,20 @@ public interface UserRepository {
      * @param username 用来检查的用户名
      * @return 0 如果不存在；否则返回用户id
      */
-    long checkUsernameAndGetId(String username);
+    long checkUsername(String username);
 
     /**
      * 用户认证
      * @param user 认证信息，至少包括用户名和秘密
      * @return true如果通过；false不通过
      */
-    boolean userAuth(User user);
+    boolean authorization(User user);
+
+    /**
+     * 注册用户
+     * @param user 注册用户信息
+     * @return 注册结果，true成功
+     */
+    boolean register(User user);
 
 }
